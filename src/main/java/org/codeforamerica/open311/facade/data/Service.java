@@ -1,5 +1,8 @@
 package org.codeforamerica.open311.facade.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 import org.codeforamerica.open311.facade.exceptions.APIWrapperException;
@@ -10,7 +13,8 @@ import org.codeforamerica.open311.facade.exceptions.APIWrapperException;
  * @author Santiago Munín <santimunin@gmail.com>
  * 
  */
-public class Service implements Serializable {
+
+public class Service implements Serializable, Parcelable {
 	private static final long serialVersionUID = 1124990264010718071L;
 	private String serviceCode;
 	private String serviceName;
@@ -81,12 +85,12 @@ public class Service implements Serializable {
 	 * Different types of Service.
 	 * 
 	 */
-	public static enum Type {
+	public enum Type {
 		REALTIME, BATCH, BLACKBOX;
 		/**
 		 * Returns an instance of this class from a given string.
 		 * 
-		 * @param type
+		 * @param type Service Type
 		 * @return <code>null</code> if the string is not one of the contained
 		 *         types.
 		 */
@@ -110,4 +114,40 @@ public class Service implements Serializable {
 				+ this.description + ")";
 	}
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.serviceCode);
+        dest.writeString(this.serviceName);
+        dest.writeString(this.description);
+        dest.writeValue(this.metadata);
+        dest.writeInt(this.type == null ? -1 : this.type.ordinal());
+        dest.writeStringArray(this.keywords);
+        dest.writeString(this.group);
+    }
+
+    protected Service(Parcel in) {
+        this.serviceCode = in.readString();
+        this.serviceName = in.readString();
+        this.description = in.readString();
+        this.metadata = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        int tmpType = in.readInt();
+        this.type = tmpType == -1 ? null : Type.values()[tmpType];
+        this.keywords = in.createStringArray();
+        this.group = in.readString();
+    }
+
+    public static final Parcelable.Creator<Service> CREATOR = new Parcelable.Creator<Service>() {
+        public Service createFromParcel(Parcel source) {
+            return new Service(source);
+        }
+
+        public Service[] newArray(int size) {
+            return new Service[size];
+        }
+    };
 }

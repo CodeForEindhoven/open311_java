@@ -1,6 +1,10 @@
 package org.codeforamerica.open311.facade.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +16,7 @@ import org.codeforamerica.open311.facade.Format;
  * 
  * @author Santiago Munín <santimunin@gmail.com>
  */
-public class Endpoint implements Serializable {
+public class Endpoint implements Serializable, Parcelable {
 	private static final long serialVersionUID = -5512681512770606630L;
 	private String specificationUrl;
 	private String url;
@@ -72,4 +76,39 @@ public class Endpoint implements Serializable {
 	public boolean isCompatibleWithFormat(Format format) {
 		return formats.contains(format);
 	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(this.specificationUrl);
+		dest.writeString(this.url);
+		dest.writeLong(changeset != null ? changeset.getTime() : -1);
+		dest.writeInt(this.type == null ? -1 : this.type.ordinal());
+		dest.writeList(this.formats);
+	}
+
+	protected Endpoint(Parcel in) {
+		this.specificationUrl = in.readString();
+		this.url = in.readString();
+		long tmpChangeset = in.readLong();
+		this.changeset = tmpChangeset == -1 ? null : new Date(tmpChangeset);
+		int tmpType = in.readInt();
+		this.type = tmpType == -1 ? null : EndpointType.values()[tmpType];
+		this.formats = new ArrayList<Format>();
+		in.readList(this.formats, List.class.getClassLoader());
+	}
+
+	public static final Parcelable.Creator<Endpoint> CREATOR = new Parcelable.Creator<Endpoint>() {
+		public Endpoint createFromParcel(Parcel source) {
+			return new Endpoint(source);
+		}
+
+		public Endpoint[] newArray(int size) {
+			return new Endpoint[size];
+		}
+	};
 }

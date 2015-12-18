@@ -82,7 +82,7 @@ public class AttributeInfo implements Serializable {
 		strBuilder.append("values: ");
 		for (Entry<String, String> pair : values.entrySet()) {
 			strBuilder.append("\n");
-			strBuilder.append("\t" + pair.getKey() + " -> " + pair.getValue());
+			strBuilder.append("\t").append(pair.getKey()).append(" -> ").append(pair.getValue());
 		}
 		return strBuilder.toString();
 	}

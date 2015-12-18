@@ -104,8 +104,7 @@ public abstract class AbstractCache implements Cache {
 		if (endpointUrl != null && endpointUrl.length() > 0
 				&& serviceCode != null && serviceCode.length() > 0
 				&& serviceDefinition != null) {
-			Serializable definition = (Serializable) serviceDefinition;
-			CacheableObject cacheableObject = new CacheableObject(definition,
+			CacheableObject cacheableObject = new CacheableObject(serviceDefinition,
 					timeToLive.get(CacheableOperation.GET_SERVICE_DEFINITION));
 			saveProperty(CacheableOperation.GET_SERVICE_DEFINITION.toString()
 					+ endpointUrl + serviceCode, cacheableObject.serialize());

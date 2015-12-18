@@ -33,6 +33,7 @@ public class CacheableObject implements Serializable {
 			this.object = thisObject.object;
 			this.expirationTime = thisObject.expirationTime;
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

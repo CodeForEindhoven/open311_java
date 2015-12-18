@@ -455,7 +455,7 @@ public class XMLParser extends AbstractParser {
 	 * @throws IOException
 	 */
 	private Document getDocument(String rawData)
-			throws UnsupportedEncodingException, SAXException, IOException {
+			throws SAXException, IOException {
 		Document doc = dBuilder.parse(new InputSource(new ByteArrayInputStream(
 				rawData.getBytes(DataParser.TEXT_FORMAT))));
 		doc.getDocumentElement().normalize();

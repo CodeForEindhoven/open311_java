@@ -49,9 +49,9 @@ public abstract class AbstractParser implements DataParser {
 	 *            List of strings.
 	 * @return <code>true</code> is all are empty.
 	 */
-	protected boolean allStringsAreEmpty(String... strings) {
-		for (int i = 0; i < strings.length; i++) {
-			if (strings[i] != null && strings[i].length() > 0) {
+        protected boolean allStringsAreEmpty(String... strings) {
+		for (String string : strings) {
+			if (string != null && string.length() > 0) {
 				return false;
 			}
 		}
@@ -66,7 +66,7 @@ public abstract class AbstractParser implements DataParser {
 	 * @throws DataParsingException
 	 *             If all parameters are missing.
 	 */
-	protected void checkParameters(String... strings)
+        protected void checkParameters(String... strings)
 			throws DataParsingException {
 		if (allStringsAreEmpty(strings)) {
 			throw new DataParsingException(

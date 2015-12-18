@@ -184,7 +184,7 @@ public class URLBuilder {
 				} else {
 					builder.append("&");
 				}
-				builder.append(key + "=" + parameters.get(key));
+				builder.append(key).append("=").append(parameters.get(key));
 			}
 			return builder.toString();
 		}

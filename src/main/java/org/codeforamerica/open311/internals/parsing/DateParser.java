@@ -47,13 +47,14 @@ public class DateParser {
 	 * @return A date object.
 	 */
 	public Date parseDate(String rawDate) {
-		for (int i = 0; i < dateFormats.length; i++) {
-			try {
-				return dateFormats[i].parseDateTime(rawDate).toDate();
-			} catch (Exception e) {
-			}
-		}
-		return null;
+            for (DateTimeFormatter dateFormat : dateFormats) {
+                try {
+                    return dateFormat.parseDateTime(rawDate).toDate();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
 	}
 
 	/**
@@ -66,12 +67,13 @@ public class DateParser {
 	 *         <code>null</code> if it didn't match any format.
 	 */
 	public String printDate(Date date) {
-		for (int i = 0; i < dateFormats.length; i++) {
-			try {
-				return dateFormats[i].print(new DateTime(date));
-			} catch (Exception e) {
-			}
-		}
-		return null;
-	}
+            for (DateTimeFormatter dateFormat : dateFormats) {
+                try {
+                    return dateFormat.print(new DateTime(date));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+    }
 }

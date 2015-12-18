@@ -7,10 +7,11 @@
 *.war
 *.ear
 target/
+build/
 
 # IntelliJ Idea
 .idea/
-jreport.iml
+*.iml
 
 # Eclipse
 .classpath

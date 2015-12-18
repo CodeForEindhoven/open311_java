@@ -382,8 +382,7 @@ public class APIWrapperFactory {
 	public String toString() {
 		StringBuilder builder = new StringBuilder("APIWrapperFactory");
 		if (city != null) {
-			builder.append(" - building from a City object " + "type: "
-					+ endpointType);
+			builder.append(" - building from a City object " + "type: ").append(endpointType);
 		}
 		if (endpointUrl != null) {
 			builder.append(" - building from an endpoint url");
