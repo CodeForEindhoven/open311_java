@@ -87,7 +87,7 @@ public class AttributeInfo implements Serializable {
 		return strBuilder.toString();
 	}
 
-	public static enum Datatype {
+	public enum Datatype {
 		STRING, NUMBER, DATETIME, TEXT, SINGLEVALUELIST, MULTIVALUELIST;
 
 		/**

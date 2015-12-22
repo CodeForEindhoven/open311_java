@@ -18,5 +18,5 @@ public interface Attribute {
 	 * @return A pair (attribute[CODE],value) or a list of pairs
 	 *         (attribute[CODE][],value1), (attribute[CODE][], value2)...
 	 */
-	public Map<String, String> generatePOSTRequestParameter();
+	Map<String, String> generatePOSTRequestParameter();
 }

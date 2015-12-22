@@ -39,8 +39,8 @@ public class POSTServiceRequestData {
 	 */
 	private POSTServiceRequestData(String serviceCode,
 			List<Attribute> attributes) {
-		this.parameters = new HashMap<String, String>();
-		this.attributes = new LinkedList<Attribute>();
+		this.parameters = new HashMap<>();
+		this.attributes = new LinkedList<>();
 		if (serviceCode != null && serviceCode.length() > 0) {
 			parameters.put(DataParser.SERVICE_CODE_TAG, serviceCode);
 			if (attributes != null) {

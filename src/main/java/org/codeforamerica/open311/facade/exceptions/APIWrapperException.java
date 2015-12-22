@@ -46,7 +46,7 @@ public class APIWrapperException extends Exception {
 	/**
 	 * Different types of errors.
 	 */
-	public static enum Error {
+	public enum Error {
 		DATA_PARSING("Problem while parsing text data."), NETWORK_MANAGER(
 				"Network problem."), URL_BUILDER(
 				"Problem while building a valid URL."), GEO_REPORT_V2(
@@ -55,7 +55,7 @@ public class APIWrapperException extends Exception {
 				"The given object wasn't created by any wrapper");
 		private String description;
 
-		private Error(String description) {
+		Error(String description) {
 			this.description = description;
 		}
 

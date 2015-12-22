@@ -76,7 +76,7 @@ public enum City {
 	private String discoveryUrl;
 	private String jurisdictionId;
 
-	private City(String cityName, String discoveryUrl, String jurisdictionId) {
+	City(String cityName, String discoveryUrl, String jurisdictionId) {
 		this.cityName = cityName;
 		this.discoveryUrl = discoveryUrl;
 		this.jurisdictionId = jurisdictionId;

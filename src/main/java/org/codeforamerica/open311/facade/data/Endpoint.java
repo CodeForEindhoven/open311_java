@@ -98,7 +98,7 @@ public class Endpoint implements Serializable, Parcelable {
 		this.changeset = tmpChangeset == -1 ? null : new Date(tmpChangeset);
 		int tmpType = in.readInt();
 		this.type = tmpType == -1 ? null : EndpointType.values()[tmpType];
-		this.formats = new ArrayList<Format>();
+		this.formats = new ArrayList<>();
 		in.readList(this.formats, List.class.getClassLoader());
 	}
 

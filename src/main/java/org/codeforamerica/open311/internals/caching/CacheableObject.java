@@ -55,7 +55,7 @@ public class CacheableObject implements Serializable {
 
 	public static String serialize(Serializable object) {
 		try {
-			return new String(Base64.encodeObject(object));
+			return Base64.encodeObject(object);
 		} catch (IOException e) {
 			return null;
 		}

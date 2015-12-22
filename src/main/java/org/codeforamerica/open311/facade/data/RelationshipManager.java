@@ -31,7 +31,7 @@ public class RelationshipManager {
 	 * Maintain a list of pairs (List<{@link Service}>, {@link APIWrapper})
 	 * instances.
 	 */
-	private Map<List<Service>, APIWrapper> serviceWrapperRelationships = new HashMap<List<Service>, APIWrapper>();
+	private Map<List<Service>, APIWrapper> serviceWrapperRelationships = new HashMap<>();
 
 	private RelationshipManager() {
 

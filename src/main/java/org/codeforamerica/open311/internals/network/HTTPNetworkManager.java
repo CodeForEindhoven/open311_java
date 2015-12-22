@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -107,7 +106,7 @@ public class HTTPNetworkManager implements NetworkManager {
 	 */
 	private HttpEntity generateHttpEntityFromParameters(
 			Map<String, String> parameters) throws UnsupportedEncodingException {
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		List<NameValuePair> nameValuePairs = new ArrayList<>();
 		if (parameters != null) {
 			for (Entry<String, String> parameterEntry : parameters.entrySet()) {
 				nameValuePairs.add(new BasicNameValuePair(parameterEntry
@@ -182,7 +181,7 @@ public class HTTPNetworkManager implements NetworkManager {
 
 		@Override
 		public Socket createSocket(Socket socket, String host, int port,
-				boolean autoClose) throws IOException, UnknownHostException {
+				boolean autoClose) throws IOException {
 			return sslContext.getSocketFactory().createSocket(socket, host,
 					port, autoClose);
 		}

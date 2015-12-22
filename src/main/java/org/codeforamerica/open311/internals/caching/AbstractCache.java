@@ -27,7 +27,7 @@ public abstract class AbstractCache implements Cache {
 	private final Map<CacheableOperation, Integer> timeToLive;
 
 	public AbstractCache() {
-		timeToLive = new HashMap<CacheableOperation, Integer>();
+		timeToLive = new HashMap<>();
 		timeToLive.put(CacheableOperation.GET_SERVICE_DISCOVERY, 720);
 		timeToLive.put(CacheableOperation.GET_SERVICE_LIST, 24);
 		timeToLive.put(CacheableOperation.GET_SERVICE_DEFINITION, 24);

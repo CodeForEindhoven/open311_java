@@ -8,7 +8,7 @@ package org.codeforamerica.open311.internals.logging;
  */
 public interface Logger {
 	
-	public final static String TAG = "open311_java";
+	String TAG = "open311_java";
 
 	/**
 	 * Logs a non-critical event.
@@ -16,7 +16,7 @@ public interface Logger {
 	 * @param message
 	 *            Message to log.
 	 */
-	public void logInfo(String message);
+	void logInfo(String message);
 
 	/**
 	 * Logs an error.
@@ -24,6 +24,6 @@ public interface Logger {
 	 * @param message
 	 *            Message to log.
 	 */
-	public void logError(String message);
+	void logError(String message);
 
 }

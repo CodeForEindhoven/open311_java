@@ -33,7 +33,7 @@ public class MultiValueAttribute implements Attribute {
 	 */
 	@Override
 	public Map<String, String> generatePOSTRequestParameter() {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<>();
 		for (int i = 0; i < values.length; i++) {
 			result.put("attribute[" + code + "][" + i + "]", values[i]);
 		}

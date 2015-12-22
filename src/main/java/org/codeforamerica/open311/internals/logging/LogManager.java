@@ -25,7 +25,7 @@ public class LogManager {
 	/**
 	 * Contains a wrapper if it has to be logged.
 	 */
-	private static Set<Object> loggedObjects = new HashSet<Object>();
+	private static Set<Object> loggedObjects = new HashSet<>();
 
 	/**
 	 * Prevents other classes to instantiate this class.
@@ -99,6 +99,7 @@ public class LogManager {
 	 * @param message
 	 *            Event message.
 	 * @return
+	 *            Log message
 	 */
 	private static String buildMessage(Object messageCreator, String message) {
 		return "(" + messageCreator + ") --> " + message;

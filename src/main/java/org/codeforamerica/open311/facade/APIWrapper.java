@@ -62,6 +62,7 @@ public class APIWrapper {
 	 * @param dataParser
 	 *            Instance of
 	 * @param networkManager
+	 *            Network Manager
 	 */
 	/* package */APIWrapper(String endpointUrl, Format format,
 			EndpointType type, DataParser dataParser,

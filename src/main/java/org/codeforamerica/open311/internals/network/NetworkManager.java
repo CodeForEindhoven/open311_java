@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.Map;
 
 import org.apache.http.protocol.HTTP;
+import java.nio.charset.StandardCharsets;
 import org.codeforamerica.open311.facade.Format;
 
 /**
@@ -14,8 +15,8 @@ import org.codeforamerica.open311.facade.Format;
  */
 public interface NetworkManager {
 
-	public static final String POST_CONTENT_TYPE = "application/x-www-form-urlencoded";
-	public static final String CHARSET = HTTP.UTF_8;
+	String POST_CONTENT_TYPE = "application/x-www-form-urlencoded";
+	String CHARSET = (StandardCharsets.UTF_8).toString();
 
 	/**
 	 * Sends a GET HTTP request.
@@ -26,7 +27,7 @@ public interface NetworkManager {
 	 * @throws IOException
 	 *             If there was any problem with the connection.
 	 */
-	public String doGet(URL url) throws IOException;
+	String doGet(URL url) throws IOException;
 
 	/**
 	 * Sends a POST HTTP request.
@@ -39,7 +40,7 @@ public interface NetworkManager {
 	 * @throws IOException
 	 *             If there was any problem with the connection.
 	 */
-	public String doPost(URL url, Map<String, String> parameters)
+	String doPost(URL url, Map<String, String> parameters)
 			throws IOException;
 
 	/**
@@ -48,5 +49,5 @@ public interface NetworkManager {
 	 * @param format
 	 *            A serialization format (XML or JSON).
 	 */
-	public void setFormat(Format format);
+	void setFormat(Format format);
 }

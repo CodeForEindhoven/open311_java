@@ -48,7 +48,7 @@ public class ServiceDefinition implements Serializable, Parcelable {
 
 	protected ServiceDefinition(Parcel in) {
 		this.serviceCode = in.readString();
-		this.attributes = new ArrayList<AttributeInfo>();
+		this.attributes = new ArrayList<>();
 		in.readList(this.attributes, List.class.getClassLoader());
 	}
 
