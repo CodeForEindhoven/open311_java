@@ -12,7 +12,6 @@ build/
 # IntelliJ Idea
 .idea/
 *.iml
-!org.codeforamerica.open311.iml
 # Eclipse
 .classpath
 .project
