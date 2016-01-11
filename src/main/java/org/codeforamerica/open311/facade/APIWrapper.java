@@ -119,24 +119,14 @@ public class APIWrapper {
      * @return List of fetched services.
      * @throws APIWrapperException If there was any problem (data parsing, I/O...).
      */
-    public List<Service> getServiceList() throws APIWrapperException {
+    public List<Service> getServiceList() throws APIWrapperException, IOException, ClassNotFoundException {
         logManager.logInfo(this, "GET Service List");
-        List<Service> result = null;
-        try {
-            result = cache
-                    .retrieveCachedServiceList(this.endpointUrl);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        List<Service> result;
+        result = cache
+                .retrieveCachedServiceList(this.endpointUrl);
         if (result == null) {
             result = askEndpointForTheServiceList();
-            try {
-                cache.saveListOfServices(endpointUrl, result);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            cache.saveListOfServices(endpointUrl, result);
         }
         if (result != null) {
             RelationshipManager.getInstance().addServiceWrapperRelationship(
@@ -179,25 +169,15 @@ public class APIWrapper {
      * @throws APIWrapperException If there was any problem (data parsing, I/O...).
      */
     public ServiceDefinition getServiceDefinition(String serviceCode)
-            throws APIWrapperException {
+            throws APIWrapperException, IOException, ClassNotFoundException {
         logManager.logInfo(this, "GET Service Definition (service_code: "
                 + serviceCode + ")");
-        ServiceDefinition result = null;
-        try {
-            result = cache.retrieveCachedServiceDefinition(
-                    endpointUrl, serviceCode);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        ServiceDefinition result;
+        result = cache.retrieveCachedServiceDefinition(
+                endpointUrl, serviceCode);
         if (result == null) {
             result = askEndpointForAServiceDefinition(serviceCode);
-            try {
-                cache.saveServiceDefinition(endpointUrl, serviceCode, result);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            cache.saveServiceDefinition(endpointUrl, serviceCode, result);
         }
         return result;
     }
@@ -264,26 +244,16 @@ public class APIWrapper {
      * @throws APIWrapperException If there was any problem.
      */
     public List<ServiceRequest> getServiceRequests(
-            GETServiceRequestsFilter operationData) throws APIWrapperException {
+            GETServiceRequestsFilter operationData) throws APIWrapperException, IOException, ClassNotFoundException {
         logManager.logInfo(this, "GET Service Requests");
         operationData = operationData == null ? new GETServiceRequestsFilter()
                 : operationData;
-        List<ServiceRequest> result = null;
-        try {
-            result = cache.retrieveCachedServiceRequests(
-                    endpointUrl, operationData);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        List<ServiceRequest> result;
+        result = cache.retrieveCachedServiceRequests(
+                endpointUrl, operationData);
         if (result == null) {
             result = askEndpointForServiceRequests(operationData);
-            try {
-                cache.saveServiceRequestList(endpointUrl, operationData, result);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            cache.saveServiceRequestList(endpointUrl, operationData, result);
         }
         return result;
     }
@@ -324,26 +294,16 @@ public class APIWrapper {
      * @throws APIWrapperException If there was any problem.
      */
     public ServiceRequest getServiceRequest(String serviceRequestId)
-            throws APIWrapperException {
+            throws APIWrapperException, IOException, ClassNotFoundException {
         logManager.logInfo(this, "GET Service Request (service_request_id: "
                 + serviceRequestId + ")");
-        ServiceRequest result = null;
-        try {
-            result = cache.retrieveCachedServiceRequest(endpointUrl,
-                    serviceRequestId);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        ServiceRequest result;
+        result = cache.retrieveCachedServiceRequest(endpointUrl,
+                serviceRequestId);
         if (result == null) {
             result = askEndpointForAServiceRequest(serviceRequestId);
-            try {
-                cache.saveSingleServiceRequest(endpointUrl, serviceRequestId,
-                        result);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            cache.saveSingleServiceRequest(endpointUrl, serviceRequestId,
+                    result);
         }
         return result;
     }

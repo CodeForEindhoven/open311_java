@@ -1,5 +1,6 @@
 package org.codeforamerica.open311.facade.data;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,11 @@ public class RelationshipManager {
 			throw new APIWrapperException("Couldn't obtain a related wrapper",
 					Error.NOT_CREATED_BY_A_WRAPPER, null);
 		}
-		return wrapper.getServiceDefinition(service.getServiceCode());
+		try {
+			return wrapper.getServiceDefinition(service.getServiceCode());
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+        return null;
 	}
 }

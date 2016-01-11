@@ -206,7 +206,7 @@ public class APIWrapperFactory {
      * @return An instance built from the given parameters to this object.
      * @throws APIWrapperException If there was any problem.
      */
-    public APIWrapper build() throws APIWrapperException {
+    public APIWrapper build() throws APIWrapperException, ClassNotFoundException {
         if (city != null) {
             return buildWrapperFromCity(city, endpointType, apiKey,
                     networkManager);
@@ -258,18 +258,14 @@ public class APIWrapperFactory {
      */
     private APIWrapper buildWrapperFromCity(City city,
                                             EndpointType endpointType, String apiKey,
-                                            NetworkManager networkManager) throws APIWrapperException {
+                                            NetworkManager networkManager) throws APIWrapperException, ClassNotFoundException {
         try {
             logManager.logInfo(this, "Getting the service discovery file.");
             DataParser dataParser = DataParserFactory.getInstance()
                     .buildDataParser(Format.XML);
-            ServiceDiscoveryInfo serviceDiscoveryInfo = null;
-            try {
-                serviceDiscoveryInfo = cache
-                        .retrieveCachedServiceDiscoveryInfo(city);
-            } catch (ClassNotFoundException e) {
-                logManager.logInfo(this, "No Cached Service discovery found.");
-            }
+            ServiceDiscoveryInfo serviceDiscoveryInfo;
+            serviceDiscoveryInfo = cache
+                    .retrieveCachedServiceDiscoveryInfo(city);
             if (serviceDiscoveryInfo == null) {
                 logManager
                         .logInfo(this,
