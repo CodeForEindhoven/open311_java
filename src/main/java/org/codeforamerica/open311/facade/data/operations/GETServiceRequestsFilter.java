@@ -22,7 +22,7 @@ import org.codeforamerica.open311.internals.parsing.DateParser;
 public class GETServiceRequestsFilter implements Serializable {
 
 	private static final long serialVersionUID = 3037178220547056225L;
-	private Map<String, String> parameters = new HashMap<>();
+	private Map<String, String> parameters = new HashMap<String, String>();
 
 	/**
 	 * Adds one or more service request ids to the filtering parameters.
@@ -75,7 +75,7 @@ public class GETServiceRequestsFilter implements Serializable {
 	 * @return List of pairs (key, value) with the required arguments.
 	 */
 	public Map<String, String> getOptionalParametersMap() {
-		Map<String, String> result = new HashMap<>();
+		Map<String, String> result = new HashMap<String, String>();
 		result.putAll(parameters);
 		return result;
 	}

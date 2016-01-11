@@ -33,7 +33,7 @@ public class SingleValueAttribute implements Attribute {
 	 */
 	@Override
 	public Map<String, String> generatePOSTRequestParameter() {
-		Map<String, String> result = new HashMap<>();
+		Map<String, String> result = new HashMap<String, String>();
 		result.put("attribute[" + code + "]", value);
 		return result;
 	}

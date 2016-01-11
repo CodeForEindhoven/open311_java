@@ -106,7 +106,7 @@ public class HTTPNetworkManager implements NetworkManager {
 	 */
 	private HttpEntity generateHttpEntityFromParameters(
 			Map<String, String> parameters) throws UnsupportedEncodingException {
-		List<NameValuePair> nameValuePairs = new ArrayList<>();
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		if (parameters != null) {
 			for (Entry<String, String> parameterEntry : parameters.entrySet()) {
 				nameValuePairs.add(new BasicNameValuePair(parameterEntry

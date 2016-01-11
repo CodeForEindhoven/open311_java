@@ -70,7 +70,7 @@ public abstract class AbstractParser implements DataParser {
 			throws DataParsingException {
 		if (allStringsAreEmpty(strings)) {
 			throw new DataParsingException(
-					"Invalid data, required fields wasn't received.");
+					"Invalid data, none of the required keywords detected.");
 		}
 	}
 }

@@ -25,7 +25,7 @@ public class LogManager {
 	/**
 	 * Contains a wrapper if it has to be logged.
 	 */
-	private static Set<Object> loggedObjects = new HashSet<>();
+	private static Set<Object> loggedObjects = new HashSet<Object>();
 
 	/**
 	 * Prevents other classes to instantiate this class.

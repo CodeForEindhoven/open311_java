@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.Map;
 
 import org.apache.http.protocol.HTTP;
-import java.nio.charset.StandardCharsets;
 import org.codeforamerica.open311.facade.Format;
 
 /**
@@ -16,7 +15,7 @@ import org.codeforamerica.open311.facade.Format;
 public interface NetworkManager {
 
 	String POST_CONTENT_TYPE = "application/x-www-form-urlencoded";
-	String CHARSET = (StandardCharsets.UTF_8).toString();
+	public static final String CHARSET = HTTP.UTF_8;
 
 	/**
 	 * Sends a GET HTTP request.

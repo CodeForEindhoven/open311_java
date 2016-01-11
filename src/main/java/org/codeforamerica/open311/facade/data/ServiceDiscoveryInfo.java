@@ -61,7 +61,7 @@ public class ServiceDiscoveryInfo implements Serializable, Parcelable {
 	 * @return <code>null</code> if a suitable endpoint couldn't be found.
 	 */
 	public Endpoint getMoreSuitableEndpoint(EndpointType endpointType) {
-		List<Endpoint> typeFilteredEndpoints = new LinkedList<>();
+		List<Endpoint> typeFilteredEndpoints = new LinkedList<Endpoint>();
 		for (Endpoint endpoint : endpoints) {
 			if (endpoint.getType() == endpointType) {
 				typeFilteredEndpoints.add(endpoint);
@@ -99,7 +99,7 @@ public class ServiceDiscoveryInfo implements Serializable, Parcelable {
 		this.changeset = tmpChangeset == -1 ? null : new Date(tmpChangeset);
 		this.contact = in.readString();
 		this.keyService = in.readString();
-		this.endpoints = new ArrayList<>();
+		this.endpoints = new ArrayList<Endpoint>();
 		in.readList(this.endpoints, List.class.getClassLoader());
 	}
 
