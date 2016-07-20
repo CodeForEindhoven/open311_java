@@ -26,7 +26,7 @@ public class APIWrapperFactoryTest {
 	}
 
 	@Test
-	public void buildTest() throws APIWrapperException {
+	public void buildTest() throws APIWrapperException, ClassNotFoundException {
 		APIWrapper wrapper = new APIWrapperFactory(City.SAN_FRANCISCO,
 				EndpointType.TEST).setNetworkManager(new MockNetworkManager())
 				.build();
@@ -35,7 +35,7 @@ public class APIWrapperFactoryTest {
 	}
 
 	@Test
-	public void buildFromEndpointTest() throws APIWrapperException {
+	public void buildFromEndpointTest() throws APIWrapperException, ClassNotFoundException {
 		APIWrapper wrapper = new APIWrapperFactory("https://www.endpoint.com",
 				"jurisdictionId").setNetworkManager(new MockNetworkManager())
 				.build();
