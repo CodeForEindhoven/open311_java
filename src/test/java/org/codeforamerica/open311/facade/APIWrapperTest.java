@@ -2,6 +2,7 @@ package org.codeforamerica.open311.facade;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
@@ -59,13 +60,13 @@ public class APIWrapperTest {
 	}
 
 	@Test
-	public void getServicesTest() throws APIWrapperException {
+	public void getServicesTest() throws APIWrapperException, IOException, ClassNotFoundException {
 		List<Service> services = wrapper.getServiceList();
 		GlobalTests.serviceListTest(services);
 	}
 
 	@Test
-	public void getServiceDefinitionTest() throws APIWrapperException {
+	public void getServiceDefinitionTest() throws APIWrapperException, IOException, ClassNotFoundException {
 		ServiceDefinition serviceDefinition = wrapper
 				.getServiceDefinition("001");
 		GlobalTests.serviceDefinitionTest(serviceDefinition);
@@ -80,7 +81,7 @@ public class APIWrapperTest {
 
 	@Test
 	public void getServiceRequests() throws APIWrapperException,
-			MalformedURLException {
+			IOException, ClassNotFoundException {
 		GETServiceRequestsFilter filter = new GETServiceRequestsFilter();
 		// Null parameters or empty strings doesn't count
 		assertTrue(filter.getOptionalParametersMap().equals(
@@ -98,7 +99,7 @@ public class APIWrapperTest {
 
 	@Test
 	public void getServiceRequest() throws APIWrapperException,
-			MalformedURLException {
+			IOException, ClassNotFoundException {
 		ServiceRequest serviceRequest = wrapper.getServiceRequest("006");
 		GlobalTests.serviceRequestTest(serviceRequest);
 	}
@@ -155,7 +156,7 @@ public class APIWrapperTest {
 
 	@Test
 	public void serviceServiceDefinitionRelationship()
-			throws APIWrapperException {
+			throws APIWrapperException, IOException, ClassNotFoundException {
 		List<Service> services = wrapper.getServiceList();
 		Service randomService = services.get(0);
 		assertNotNull(randomService.getServiceDefinition());
