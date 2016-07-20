@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class CacheTest {
 	}
 
 	@Test
-	public void testServiceDiscoveryCaching() throws APIWrapperException {
+	public void testServiceDiscoveryCaching() throws APIWrapperException, ClassNotFoundException {
 		assertNull(cache.retrieveCachedServiceDiscoveryInfo(City.SAN_FRANCISCO));
 		APIWrapperFactory wrapperFactory = new APIWrapperFactory(
 				City.SAN_FRANCISCO).setCache(cache).setNetworkManager(
@@ -54,7 +55,7 @@ public class CacheTest {
 	}
 
 	@Test
-	public void testServiceListCaching() throws APIWrapperException {
+	public void testServiceListCaching() throws APIWrapperException, ClassNotFoundException, IOException {
 		APIWrapperFactory wrapperFactory = new APIWrapperFactory(
 				City.SAN_FRANCISCO).setCache(cache).setNetworkManager(
 				new MockNetworkManager());
@@ -68,7 +69,7 @@ public class CacheTest {
 	}
 
 	@Test
-	public void testServiceDefinitionCaching() throws APIWrapperException {
+	public void testServiceDefinitionCaching() throws APIWrapperException, ClassNotFoundException, IOException {
 		APIWrapperFactory wrapperFactory = new APIWrapperFactory(
 				City.SAN_FRANCISCO).setCache(cache).setNetworkManager(
 				new MockNetworkManager());
@@ -88,7 +89,7 @@ public class CacheTest {
 	}
 
 	@Test
-	public void testServiceRequestsCaching() throws APIWrapperException {
+	public void testServiceRequestsCaching() throws APIWrapperException, ClassNotFoundException, IOException {
 		APIWrapperFactory wrapperFactory = new APIWrapperFactory(
 				City.SAN_FRANCISCO).setCache(cache).setNetworkManager(
 				new MockNetworkManager());
@@ -107,7 +108,7 @@ public class CacheTest {
 	}
 
 	@Test
-	public void testServiceRequestCaching() throws APIWrapperException {
+	public void testServiceRequestCaching() throws APIWrapperException, ClassNotFoundException, IOException {
 		APIWrapperFactory wrapperFactory = new APIWrapperFactory(
 				City.SAN_FRANCISCO).setCache(cache).setNetworkManager(
 				new MockNetworkManager());
