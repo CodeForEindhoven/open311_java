@@ -1,7 +1,8 @@
 package org.codeforamerica.open311.internals.network;
 
+import okhttp3.HttpUrl;
+
 import java.io.IOException;
-import java.net.URL;
 import java.util.Map;
 
 import org.codeforamerica.open311.facade.Format;
@@ -15,7 +16,7 @@ public class MockNetworkManager implements NetworkManager {
 	private Format format = Format.XML;
 
 	@Override
-	public String doGet(URL url) throws IOException {
+	public String doGet(HttpUrl url) throws IOException {
 		if (url.toString().contains("simulateIOException")) {
 			throw new IOException();
 		}
@@ -29,7 +30,7 @@ public class MockNetworkManager implements NetworkManager {
 	}
 
 	@Override
-	public String doPost(URL url, Map<String, String> parameters)
+	public String doPost(HttpUrl url, Map<String, String> parameters)
 			throws IOException {
 		if (url.toString().contains("simulateIOException")) {
 			throw new IOException();
@@ -51,7 +52,7 @@ public class MockNetworkManager implements NetworkManager {
 	 *            Request URL.
 	 * @return Empty if it doesn't find any suitable response.
 	 */
-	private String XMLResponse(URL url) {
+	private String XMLResponse(HttpUrl url) {
 		if (url.toString().contains("simulateAPIError")) {
 			return errorXML();
 		}
@@ -80,7 +81,7 @@ public class MockNetworkManager implements NetworkManager {
 	 *            Request URL.
 	 * @return Empty if it doesn't find any suitable response.
 	 */
-	private String JSONResponse(URL url) {
+	private String JSONResponse(HttpUrl url) {
 		if (url.toString().contains("services.json")) {
 			return serviceListJSON();
 		}
@@ -103,7 +104,7 @@ public class MockNetworkManager implements NetworkManager {
 	 *            Request URL.
 	 * @return Empty if it doesn't find any suitable response.
 	 */
-	private String XMLPOSTResponse(URL url) {
+	private String XMLPOSTResponse(HttpUrl url) {
 		if (url.toString().contains("simulateAPIError")) {
 			return errorXML();
 		}
@@ -128,7 +129,7 @@ public class MockNetworkManager implements NetworkManager {
 	 *            Request URL.
 	 * @return Empty if it doesn't find any suitable response.
 	 */
-	private String JSONPOSTResponse(URL url) {
+	private String JSONPOSTResponse(HttpUrl url) {
 		if (url.toString().contains("simulateAPIError")) {
 			return errorJSON();
 		}

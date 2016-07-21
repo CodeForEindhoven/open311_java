@@ -1,10 +1,10 @@
 package org.codeforamerica.open311.internals.network;
 
+import okhttp3.HttpUrl;
+
 import java.io.IOException;
-import java.net.URL;
 import java.util.Map;
 
-import org.apache.http.protocol.HTTP;
 import org.codeforamerica.open311.facade.Format;
 
 /**
@@ -15,7 +15,6 @@ import org.codeforamerica.open311.facade.Format;
 public interface NetworkManager {
 
 	String POST_CONTENT_TYPE = "application/x-www-form-urlencoded";
-	public static final String CHARSET = HTTP.UTF_8;
 
 	/**
 	 * Sends a GET HTTP request.
@@ -26,7 +25,7 @@ public interface NetworkManager {
 	 * @throws IOException
 	 *             If there was any problem with the connection.
 	 */
-	String doGet(URL url) throws IOException;
+	String doGet(HttpUrl url) throws IOException;
 
 	/**
 	 * Sends a POST HTTP request.
@@ -39,7 +38,7 @@ public interface NetworkManager {
 	 * @throws IOException
 	 *             If there was any problem with the connection.
 	 */
-	String doPost(URL url, Map<String, String> parameters)
+	String doPost(HttpUrl url, Map<String, String> parameters)
 			throws IOException;
 
 	/**

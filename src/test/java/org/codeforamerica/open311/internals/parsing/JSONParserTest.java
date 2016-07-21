@@ -1,5 +1,7 @@
 package org.codeforamerica.open311.internals.parsing;
 
+import okhttp3.HttpUrl;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,7 +45,7 @@ public class JSONParserTest {
 	public void serviceListParsingTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		List<Service> services = parser.parseServiceList(netManager
-				.doGet(new URL(BASE_URL + "/services.json")));
+				.doGet(HttpUrl.parse(BASE_URL + "/services.json")));
 		GlobalTests.serviceListTest(services);
 	}
 
@@ -54,7 +56,7 @@ public class JSONParserTest {
 	public void serviceListParsingWithErrorsTest()
 			throws MalformedURLException, IOException, DataParsingException {
 		String dataWithError = netManager.doGet(
-				new URL(BASE_URL + "/services.json")).replace("\"", ":");
+				HttpUrl.parse(BASE_URL + "/services.json")).replace("\"", ":");
 		parser.parseServiceList(dataWithError);
 	}
 
@@ -65,7 +67,7 @@ public class JSONParserTest {
 	public void serviceDefinitionParsingTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		ServiceDefinition serviceDefinition = parser
-				.parseServiceDefinition(netManager.doGet(new URL(BASE_URL
+				.parseServiceDefinition(netManager.doGet(HttpUrl.parse(BASE_URL
 						+ "/services/001.json")));
 		GlobalTests.serviceDefinitionTest(serviceDefinition);
 
@@ -78,7 +80,7 @@ public class JSONParserTest {
 	public void serviceDefinitionParsingWithErrorTest()
 			throws MalformedURLException, IOException, DataParsingException {
 		String dataWithError = netManager.doGet(
-				new URL(BASE_URL + "/services/001.json")).replace("\"", ":");
+				HttpUrl.parse(BASE_URL + "/services/001.json")).replace("\"", ":");
 		parser.parseServiceDefinition(dataWithError);
 	}
 
@@ -89,7 +91,7 @@ public class JSONParserTest {
 	public void serviceRequestIdFromATokenTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		ServiceRequestIdResponse id = parser
-				.parseServiceRequestIdFromAToken(netManager.doGet(new URL(
+				.parseServiceRequestIdFromAToken(netManager.doGet(HttpUrl.parse(
 						BASE_URL + "/tokens/222.json")));
 		GlobalTests.serviceIdFromTokenTest(id);
 	}
@@ -101,7 +103,7 @@ public class JSONParserTest {
 	public void serviceRequestIdFromATokenTestWithErrorTest()
 			throws MalformedURLException, IOException, DataParsingException {
 		String dataWithError = netManager.doGet(
-				new URL(BASE_URL + "/tokens/001.json")).replace("\"", ":");
+				HttpUrl.parse(BASE_URL + "/tokens/001.json")).replace("\"", ":");
 		parser.parseServiceRequestIdFromAToken(dataWithError);
 	}
 
@@ -112,7 +114,7 @@ public class JSONParserTest {
 	public void serviceRequestsTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		List<ServiceRequest> list = parser.parseServiceRequests(netManager
-				.doGet(new URL(BASE_URL + "/requests.json")));
+				.doGet(HttpUrl.parse(BASE_URL + "/requests.json")));
 		GlobalTests.serviceRequestsTest(list);
 	}
 
@@ -123,7 +125,7 @@ public class JSONParserTest {
 	public void serviceRequestsWithErrorTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		String dataWithError = netManager.doGet(
-				new URL(BASE_URL + "/requests.json")).replace("\"", ":");
+				HttpUrl.parse(BASE_URL + "/requests.json")).replace("\"", ":");
 		parser.parseServiceRequests(dataWithError);
 	}
 
@@ -131,7 +133,7 @@ public class JSONParserTest {
 	public void postServiceRequestResponseTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		POSTServiceRequestResponse response = parser
-				.parsePostServiceRequestResponse(netManager.doPost(new URL(
+				.parsePostServiceRequestResponse(netManager.doPost(HttpUrl.parse(
 						BASE_URL + "/requests.json"), null));
 		GlobalTests.postServiceRequestsTest(response);
 	}
@@ -143,7 +145,7 @@ public class JSONParserTest {
 	public void postServiceRequestResponseWithErrorTest()
 			throws MalformedURLException, IOException, DataParsingException {
 		String dataWithError = netManager.doPost(
-				new URL(BASE_URL + "/requests.xml"), null).replace("\"", ":");
+				HttpUrl.parse(BASE_URL + "/requests.xml"), null).replace("\"", ":");
 		parser.parsePostServiceRequestResponse(dataWithError);
 	}
 
@@ -154,7 +156,7 @@ public class JSONParserTest {
 	public void geoReportV2ErrorTest() throws MalformedURLException,
 			DataParsingException, IOException {
 		GeoReportV2Error error = parser.parseGeoReportV2Errors(netManager
-				.doPost(new URL(BASE_URL + "/requests/simulateAPIError.json"),
+				.doPost(HttpUrl.parse(BASE_URL + "/requests/simulateAPIError.json"),
 						null));
 		GlobalTests.errorTest(error);
 	}
@@ -166,7 +168,7 @@ public class JSONParserTest {
 	public void geoReportV2ErrorWithErrorTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		String dataWithError = netManager.doPost(
-				new URL(BASE_URL + "/requests.json"), null).replace("\"", ":");
+				HttpUrl.parse(BASE_URL + "/requests.json"), null).replace("\"", ":");
 		parser.parseGeoReportV2Errors(dataWithError);
 	}
 

@@ -1,5 +1,7 @@
 package org.codeforamerica.open311.internals.parsing;
 
+import okhttp3.HttpUrl;
+
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -57,7 +59,7 @@ public class XMLParserTest {
 	public void serviceListParsingTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		List<Service> services = parser.parseServiceList(netManager
-				.doGet(new URL(BASE_URL + "/services.xml")));
+				.doGet(HttpUrl.parse(BASE_URL + "/services.xml")));
 		GlobalTests.serviceListTest(services);
 	}
 
@@ -67,7 +69,7 @@ public class XMLParserTest {
 	@Test(expected = DataParsingException.class)
 	public void serviceListParsingWithErrorsTest()
 			throws MalformedURLException, IOException, DataParsingException {
-		String dataWithError = netManager.doGet(new URL(BASE_URL
+		String dataWithError = netManager.doGet(HttpUrl.parse(BASE_URL
 				+ "/services.xml"))
 				+ "ERRORSTRING";
 		parser.parseServiceList(dataWithError);
@@ -80,7 +82,7 @@ public class XMLParserTest {
 	public void serviceDefinitionParsingTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		ServiceDefinition serviceDefinition = parser
-				.parseServiceDefinition(netManager.doGet(new URL(BASE_URL
+				.parseServiceDefinition(netManager.doGet(HttpUrl.parse(BASE_URL
 						+ "/services/001.xml")));
 		GlobalTests.serviceDefinitionTest(serviceDefinition);
 
@@ -92,7 +94,7 @@ public class XMLParserTest {
 	@Test(expected = DataParsingException.class)
 	public void serviceDefinitionParsingWithErrorTest()
 			throws MalformedURLException, IOException, DataParsingException {
-		String dataWithError = netManager.doGet(new URL(BASE_URL
+		String dataWithError = netManager.doGet(HttpUrl.parse(BASE_URL
 				+ "/services/001.xml"))
 				+ "ERRORSTRING";
 		parser.parseServiceDefinition(dataWithError);
@@ -105,7 +107,7 @@ public class XMLParserTest {
 	public void serviceRequestIdFromATokenTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		ServiceRequestIdResponse id = parser
-				.parseServiceRequestIdFromAToken(netManager.doGet(new URL(
+				.parseServiceRequestIdFromAToken(netManager.doGet(HttpUrl.parse(
 						BASE_URL + "/tokens/222.xml")));
 		GlobalTests.serviceIdFromTokenTest(id);
 	}
@@ -116,7 +118,7 @@ public class XMLParserTest {
 	@Test(expected = DataParsingException.class)
 	public void serviceRequestIdFromATokenTestWithErrorTest()
 			throws MalformedURLException, IOException, DataParsingException {
-		String dataWithError = netManager.doGet(new URL(BASE_URL
+		String dataWithError = netManager.doGet(HttpUrl.parse(BASE_URL
 				+ "/tokens/001.xml"))
 				+ "ERRORSTRING";
 		parser.parseServiceRequestIdFromAToken(dataWithError);
@@ -129,7 +131,7 @@ public class XMLParserTest {
 	public void serviceRequestsTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		List<ServiceRequest> list = parser.parseServiceRequests(netManager
-				.doGet(new URL(BASE_URL + "/requests.xml")));
+				.doGet(HttpUrl.parse(BASE_URL + "/requests.xml")));
 		GlobalTests.serviceRequestsTest(list);
 	}
 
@@ -139,7 +141,7 @@ public class XMLParserTest {
 	@Test(expected = DataParsingException.class)
 	public void serviceRequestsWithErrorTest() throws MalformedURLException,
 			IOException, DataParsingException {
-		String dataWithError = netManager.doGet(new URL(BASE_URL
+		String dataWithError = netManager.doGet(HttpUrl.parse(BASE_URL
 				+ "/requests.xml"))
 				+ "ERRORSTRING";
 		parser.parseServiceRequests(dataWithError);
@@ -149,7 +151,7 @@ public class XMLParserTest {
 	public void postServiceRequestResponseTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		POSTServiceRequestResponse response = parser
-				.parsePostServiceRequestResponse(netManager.doPost(new URL(
+				.parsePostServiceRequestResponse(netManager.doPost(HttpUrl.parse(
 						BASE_URL + "/requests.xml"), null));
 		GlobalTests.postServiceRequestsTest(response);
 	}
@@ -160,7 +162,7 @@ public class XMLParserTest {
 	@Test(expected = DataParsingException.class)
 	public void postServiceRequestResponseWithErrorTest()
 			throws MalformedURLException, IOException, DataParsingException {
-		String dataWithError = netManager.doPost(new URL(BASE_URL
+		String dataWithError = netManager.doPost(HttpUrl.parse(BASE_URL
 				+ "/requests.xml"), null)
 				+ "ERRORSTRING";
 		parser.parsePostServiceRequestResponse(dataWithError);
@@ -173,7 +175,7 @@ public class XMLParserTest {
 	public void geoReportV2ErrorTest() throws MalformedURLException,
 			DataParsingException, IOException {
 		GeoReportV2Error error = parser.parseGeoReportV2Errors(netManager
-				.doPost(new URL(BASE_URL + "/requests/simulateAPIError.xml"),
+				.doPost(HttpUrl.parse(BASE_URL + "/requests/simulateAPIError.xml"),
 						null));
 		GlobalTests.errorTest(error);
 	}
@@ -184,7 +186,7 @@ public class XMLParserTest {
 	@Test(expected = DataParsingException.class)
 	public void geoReportV2ErrorWithErrorTest() throws MalformedURLException,
 			IOException, DataParsingException {
-		String dataWithError = netManager.doPost(new URL(BASE_URL
+		String dataWithError = netManager.doPost(HttpUrl.parse(BASE_URL
 				+ "/requests.xml"), null)
 				+ "ERRORSTRING";
 		parser.parseGeoReportV2Errors(dataWithError);
@@ -194,7 +196,7 @@ public class XMLParserTest {
 	public void testServiceDiscoveryTest() throws MalformedURLException,
 			IOException, DataParsingException {
 		ServiceDiscoveryInfo serviceDiscoveryInfo = parser
-				.parseServiceDiscovery(netManager.doGet(new URL(BASE_URL
+				.parseServiceDiscovery(netManager.doGet(HttpUrl.parse(BASE_URL
 						+ "discovery")));
 		assertEquals(
 				serviceDiscoveryInfo.getContact(),

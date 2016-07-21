@@ -27,12 +27,14 @@
     </content>
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="okhttp-3.4.1" level="project" />
     <orderEntry type="library" exported="" name="joda-time-2.9.1" level="project" />
     <orderEntry type="library" exported="" name="base64-2.3.8" level="project" />
     <orderEntry type="library" exported="" name="android-2.1.2" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.5" level="project" />
     <orderEntry type="library" exported="" name="slf4j-simple-1.7.5" level="project" />
     <orderEntry type="library" exported="" name="httpclient-4.3.5" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.9.0" level="project" />
     <orderEntry type="library" exported="" name="opengl-api-gl1.1-android-2.1_r1" level="project" />
     <orderEntry type="library" exported="" name="xmlParserAPIs-2.6.2" level="project" />
     <orderEntry type="library" exported="" name="xpp3-1.1.4c" level="project" />

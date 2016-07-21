@@ -1,6 +1,7 @@
 package org.codeforamerica.open311.facade;
 
-import java.net.URL;
+import okhttp3.HttpUrl;
+
 import java.util.Map;
 
 import org.codeforamerica.open311.facade.exceptions.APIWrapperException;
@@ -29,7 +30,7 @@ public class InvalidXMLWrapper extends APIWrapper {
 	 * receiving the response.
 	 */
 	@Override
-	protected String networkGet(URL url) throws APIWrapperException {
+	protected String networkGet(HttpUrl url) throws APIWrapperException {
 		return sanitizeOutput(super.networkGet(url));
 	}
 
@@ -38,7 +39,7 @@ public class InvalidXMLWrapper extends APIWrapper {
 	 * receiving the response.
 	 */
 	@Override
-	protected String networkPost(URL url, Map<String, String> parameters)
+	protected String networkPost(HttpUrl url, Map<String, String> parameters)
 			throws APIWrapperException {
 		return sanitizeOutput(super.networkPost(url, parameters));
 	}

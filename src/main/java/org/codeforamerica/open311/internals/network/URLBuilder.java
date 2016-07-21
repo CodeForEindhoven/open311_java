@@ -1,5 +1,7 @@
 package org.codeforamerica.open311.internals.network;
 
+import okhttp3.HttpUrl;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -39,9 +41,9 @@ public class URLBuilder {
 	 *             If one of the parts of the url (endpoint's base url,
 	 *             format...) is not correct.
 	 */
-	public URL buildGetServiceListUrl() throws MalformedURLException {
+	public HttpUrl buildGetServiceListUrl() throws MalformedURLException {
 		String url = baseUrl + "/" + GET_SERVICE_LIST + "." + format;
-		return new URL(addJurisdictionId(url, jurisdictionId));
+		return HttpUrl.parse(addJurisdictionId(url, jurisdictionId));
 	}
 
 	/**
@@ -54,11 +56,11 @@ public class URLBuilder {
 	 *             If one of the parts of the url (endpoint's base url,
 	 *             format...) is not correct.
 	 */
-	public URL buildGetServiceDefinitionUrl(String serviceCode)
+	public HttpUrl buildGetServiceDefinitionUrl(String serviceCode)
 			throws MalformedURLException {
 		String url = baseUrl + "/" + GET_SERVICE_DEFINITION + "/" + serviceCode
 				+ "." + format;
-		return new URL(addJurisdictionId(url, jurisdictionId));
+		return HttpUrl.parse(addJurisdictionId(url, jurisdictionId));
 	}
 
 	/**
@@ -69,9 +71,9 @@ public class URLBuilder {
 	 *             If one of the parts of the url (endpoint's base url,
 	 *             format...) is not correct.
 	 */
-	public URL buildPostServiceRequestUrl() throws MalformedURLException {
+	public HttpUrl buildPostServiceRequestUrl() throws MalformedURLException {
 		String base = baseUrl + "/" + POST_SERVICE_REQUEST + "." + format;
-		return new URL(base);
+		return HttpUrl.parse(base);
 	}
 
 	/**
@@ -84,11 +86,11 @@ public class URLBuilder {
 	 *             If one of the parts of the url (endpoint's base url,
 	 *             format...) is not correct.
 	 */
-	public URL buildGetServiceRequestIdFromATokenUrl(String token)
+	public HttpUrl buildGetServiceRequestIdFromATokenUrl(String token)
 			throws MalformedURLException {
 		String url = baseUrl + "/" + GET_SERVICE_REQUEST_FROM_A_TOKEN + "/"
 				+ token + "." + format;
-		return new URL(addJurisdictionId(url, jurisdictionId));
+		return HttpUrl.parse(addJurisdictionId(url, jurisdictionId));
 	}
 
 	/**
@@ -101,7 +103,7 @@ public class URLBuilder {
 	 *             If one of the parts of the url (endpoint's base url,
 	 *             format...) is not correct.
 	 */
-	public URL buildGetServiceRequests(Map<String, String> arguments)
+	public HttpUrl buildGetServiceRequests(Map<String, String> arguments)
 			throws MalformedURLException {
 		if (jurisdictionId.length() > 0) {
 			arguments.put("jurisdiction_id", jurisdictionId);
@@ -120,7 +122,7 @@ public class URLBuilder {
 	 *             If one of the parts of the url (endpoint's base url,
 	 *             format...) is not correct.
 	 */
-	public URL buildGetServiceRequest(String serviceId)
+	public HttpUrl buildGetServiceRequest(String serviceId)
 			throws MalformedURLException {
 		String url = baseUrl + "/" + GET_SERVICE_REQUESTS + "/" + serviceId
 				+ "." + format;
@@ -202,12 +204,12 @@ public class URLBuilder {
 	 * @throws MalformedURLException
 	 *             If there was any problem building the URL.
 	 */
-	private URL buildUrl(String base, Map<String, String> arguments)
+	private HttpUrl buildUrl(String base, Map<String, String> arguments)
 			throws MalformedURLException {
 		if (arguments == null) {
-			return new URL(base);
+			return HttpUrl.parse(base);
 		} else {
-			return new URL(base + "?" + buildParameterString(arguments));
+			return HttpUrl.parse(base + "?" + buildParameterString(arguments));
 		}
 	}
 

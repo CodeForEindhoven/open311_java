@@ -1,5 +1,7 @@
 package org.codeforamerica.open311.facade;
 
+import okhttp3.HttpUrl;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -271,7 +273,7 @@ public class APIWrapperFactory {
                         .logInfo(this,
                                 "Service discovery file was not cached, downloading it.");
                 serviceDiscoveryInfo = dataParser
-                        .parseServiceDiscovery(networkManager.doGet(new URL(
+                        .parseServiceDiscovery(networkManager.doGet(HttpUrl.parse(
                                 city.getDiscoveryUrl())));
                 cache.saveServiceDiscovery(city, serviceDiscoveryInfo);
             }

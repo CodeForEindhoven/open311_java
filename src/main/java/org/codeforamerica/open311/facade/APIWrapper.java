@@ -1,5 +1,7 @@
 package org.codeforamerica.open311.facade;
 
+import okhttp3.HttpUrl;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -147,7 +149,7 @@ public class APIWrapper {
 
         String rawServiceListData = "";
         try {
-            URL serviceListUrl = urlBuilder.buildGetServiceListUrl();
+            HttpUrl serviceListUrl = urlBuilder.buildGetServiceListUrl();
             rawServiceListData = networkGet(serviceListUrl);
             return dataParser.parseServiceList(rawServiceListData);
         } catch (DataParsingException e) {
@@ -195,7 +197,7 @@ public class APIWrapper {
                 + serviceCode + ") is not cached, asking endpoint.");
         String rawServiceDefinitionData = "";
         try {
-            URL serviceDefinitionUrl = urlBuilder
+            HttpUrl serviceDefinitionUrl = urlBuilder
                     .buildGetServiceDefinitionUrl(serviceCode);
             rawServiceDefinitionData = networkGet(serviceDefinitionUrl);
             return dataParser.parseServiceDefinition(rawServiceDefinitionData);
@@ -221,7 +223,7 @@ public class APIWrapper {
                 + token + "), asking endpoint.");
         String rawServiceRequestId = "";
         try {
-            URL serviceDefinitionUrl = urlBuilder
+            HttpUrl serviceDefinitionUrl = urlBuilder
                     .buildGetServiceRequestIdFromATokenUrl(token);
             rawServiceRequestId = networkGet(serviceDefinitionUrl);
             return dataParser
@@ -272,7 +274,7 @@ public class APIWrapper {
                         "GET Service Requests with the given filter is not cached, asking endpoint.");
         String rawServiceRequests = "";
         try {
-            URL serviceRequestsUrl = operationData != null ? urlBuilder
+            HttpUrl serviceRequestsUrl = operationData != null ? urlBuilder
                     .buildGetServiceRequests(operationData
                             .getOptionalParametersMap()) : urlBuilder
                     .buildGetServiceRequests(null);
@@ -321,7 +323,7 @@ public class APIWrapper {
                 + serviceRequestId + ") is not cached, asking endpoint.");
         String rawServiceRequests = "";
         try {
-            URL serviceRequestsUrl = urlBuilder
+            HttpUrl serviceRequestsUrl = urlBuilder
                     .buildGetServiceRequest(serviceRequestId);
             rawServiceRequests = networkGet(serviceRequestsUrl);
             List<ServiceRequest> parsedServiceRequests = dataParser
@@ -357,7 +359,7 @@ public class APIWrapper {
         List<Attribute> attributes = operationData.getAttributes() != null ? operationData
                 .getAttributes() : new LinkedList<Attribute>();
         try {
-            URL url = urlBuilder.buildPostServiceRequestUrl();
+            HttpUrl url = urlBuilder.buildPostServiceRequestUrl();
             return postServiceRequestInternal(url, optionalArguments,
                     attributes);
         } catch (MalformedURLException e) {
@@ -376,7 +378,7 @@ public class APIWrapper {
      * @throws APIWrapperException   If there was any problem.
      * @throws MalformedURLException If any attribute is not valid.
      */
-    private POSTServiceRequestResponse postServiceRequestInternal(URL url,
+    private POSTServiceRequestResponse postServiceRequestInternal(HttpUrl url,
                                                                   Map<String, String> arguments, List<Attribute> attributes)
             throws APIWrapperException, MalformedURLException {
         if (apiKey.length() > 0) {
@@ -426,7 +428,7 @@ public class APIWrapper {
      * @return Server response.
      * @throws APIWrapperException If there was any problem with the request.
      */
-    protected String networkGet(URL url) throws APIWrapperException {
+    protected String networkGet(HttpUrl url) throws APIWrapperException {
         logManager.logInfo(this, "HTTP GET " + url.toString());
         try {
             String response = networkManager.doGet(url);
@@ -451,7 +453,7 @@ public class APIWrapper {
      * @return Server response.
      * @throws APIWrapperException If there was any problem with the request.
      */
-    protected String networkPost(URL url, Map<String, String> parameters)
+    protected String networkPost(HttpUrl url, Map<String, String> parameters)
             throws APIWrapperException {
         logManager.logInfo(this, "HTTP POST " + url.toString());
         try {

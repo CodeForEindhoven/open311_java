@@ -1,194 +1,122 @@
 package org.codeforamerica.open311.internals.network;
 
+import android.graphics.Bitmap;
+
+import okhttp3.FormBody;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.Socket;
-import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.util.EntityUtils;
 import org.codeforamerica.open311.facade.Format;
 
 /**
- * Implementation using the <a href="http://hc.apache.org/">Apache
- * HttpComponents</> library.
- * 
+ * Implementation using the <a href="http://square.github.io/okhttp/">
+ * okHttp</> library.
+ *
  * @author Santiago Munín <santimunin@gmail.com>
- * 
  */
 public class HTTPNetworkManager implements NetworkManager {
-	private HttpClient httpClient;
-	private Format format;
-	private static final int TIMEOUT = 5000;
-	private static final String ACCEPT_HEADER = "Accept";
-	private static final String CONTENT_TYPE_HEADER = "Content-Type";
+    private OkHttpClient okhttpClient;
+    private Format format;
+    private Bitmap bitmap;
+    private static final String FILENAME = "media.jpg";
+    private static final String ACCEPT_HEADER = "Accept";
+    private static final String CONTENT_TYPE_HEADER = "Content-Type";
 
-	public HTTPNetworkManager(Format format) {
-		this.format = format;
-		this.httpClient = getNewHttpClient();
-	}
+    public HTTPNetworkManager() {
+        this.okhttpClient = new OkHttpClient();
+    }
+    public HTTPNetworkManager(Format format) {
+        this.format = format;
+        this.okhttpClient = new OkHttpClient();
+    }
+    public HTTPNetworkManager(Bitmap bitmap) {
+        this.bitmap = bitmap;
+        this.okhttpClient = new OkHttpClient();
+    }
 
-	@Override
-	public String doGet(URL url) throws IOException {
-		try {
-			HttpGet httpGet = new HttpGet(url.toURI());
-			httpGet.setHeader(ACCEPT_HEADER, format.getHTTPContentType());
-			httpGet.setHeader(CONTENT_TYPE_HEADER, format.getHTTPContentType());
-			HttpResponse response = httpClient.execute(httpGet);
-			return EntityUtils.toString(response.getEntity(), CHARSET);
-		} catch (Exception e) {
-			throw new IOException(e.getMessage());
-		}
-	}
+    @Override
+    public String doGet(HttpUrl url) throws IOException {
+        Request request = new Request.Builder()
+                .header(ACCEPT_HEADER, format.getHTTPContentType())
+                .header(CONTENT_TYPE_HEADER, format.getHTTPContentType())
+                .url(url)
+                .build();
+        Response response = okhttpClient.newCall(request).execute();
+        return response.body().string();
+    }
 
-	@Override
-	public String doPost(URL url, Map<String, String> parameters)
-			throws IOException {
-		try {
-			HttpPost httpPost = new HttpPost(url.toURI());
-			httpPost.setHeader(ACCEPT_HEADER, format.getHTTPContentType());
-			httpPost.setHeader("Content-Type", POST_CONTENT_TYPE);
-			httpPost.setEntity(generateHttpEntityFromParameters(parameters));
-			HttpResponse response = httpClient.execute(httpPost);
-			return EntityUtils.toString(response.getEntity(), CHARSET);
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
-	}
+    @Override
+    public String doPost(HttpUrl url, Map<String, String> parameters) throws IOException {
+        if(this.bitmap != null){
+            return doPost(url, parameters, bitmap);
+        }
+        try {
+            FormBody.Builder formBuilder = new FormBody.Builder();
+            for (Entry<String, String> param : parameters.entrySet()) {
+                formBuilder.add(param.getKey(), param.getValue());
+            }
+            RequestBody body = formBuilder.build();
+            Request request = new Request.Builder()
+                    .header(ACCEPT_HEADER, format.getHTTPContentType())
+                    .header("Content-Type", POST_CONTENT_TYPE)
+                    .url(url)
+                    .post(body)
+                    .build();
+            Response response = null;
 
-	@Override
-	public void setFormat(Format format) {
-		this.format = format;
-	}
+            response = okhttpClient.newCall(request).execute();
+            return response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	/**
-	 * Builds an {@link HttpEntity} with all the given parameters.
-	 * 
-	 * @param parameters
-	 *            A list of parameters of a POST request.
-	 * @return An {@link UrlEncodedFormEntity} with the given parameters.
-	 * @throws UnsupportedEncodingException
-	 *             if the default encoding isn't supported.
-	 */
-	private HttpEntity generateHttpEntityFromParameters(
-			Map<String, String> parameters) throws UnsupportedEncodingException {
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		if (parameters != null) {
-			for (Entry<String, String> parameterEntry : parameters.entrySet()) {
-				nameValuePairs.add(new BasicNameValuePair(parameterEntry
-						.getKey(), parameterEntry.getValue()));
-			}
-		}
-		return new UrlEncodedFormEntity(nameValuePairs);
-	}
+    public String doPost(HttpUrl url, Map<String, String> parameters, Bitmap bitmap) throws IOException {
+        // Construct the multipart
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        builder.setType(MultipartBody.FORM);
 
-	/**
-	 * Builds a {@link HttpClient} which allows non trusted SSL certificates.
-	 * 
-	 * @return {@link HttpClient} which allows non trusted SSL certificates.
-	 */
-	private HttpClient getNewHttpClient() {
-		try {
-			KeyStore trustStore = KeyStore.getInstance(KeyStore
-					.getDefaultType());
-			trustStore.load(null, null);
+        // Add the parameters
+        for (Entry<String, String> entry : parameters.entrySet()) {
+            builder.addFormDataPart(entry.getKey(), entry.getValue());
+        }
 
-			SSLSocketFactory sf = new MySSLSocketFactory(trustStore);
-			sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+        // Construct the image
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream);
+        byte[] binaryData = stream.toByteArray();
 
-			HttpParams params = new BasicHttpParams();
-			HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-			HttpProtocolParams.setContentCharset(params, CHARSET);
-			HttpConnectionParams.setConnectionTimeout(params, TIMEOUT);
+        // todo add the image to the body
+        //entity.addBinaryBody("media", binaryData, contentType, FILENAME);
+        builder.addFormDataPart("media", FILENAME, RequestBody.create(MediaType.parse("image/jpeg"), binaryData));
 
-			SchemeRegistry registry = new SchemeRegistry();
-			registry.register(new Scheme("http", PlainSocketFactory
-					.getSocketFactory(), 80));
-			registry.register(new Scheme("https", sf, 443));
+        //Create the RequestBody
+        RequestBody requestBody = builder.build();
 
-			ClientConnectionManager ccm = new ThreadSafeClientConnManager(
-					params, registry);
-			return new DefaultHttpClient(ccm, params);
-		} catch (Exception e) {
-			return new DefaultHttpClient();
-		}
-	}
 
-	/**
-	 * A SSLSocketFactory which allows non trusted SSL certificates.
-	 * 
-	 * @author Santiago Munín <santimunin@gmail.com>
-	 * 
-	 */
-	private class MySSLSocketFactory extends SSLSocketFactory {
-		SSLContext sslContext = SSLContext.getInstance("TLS");
+        // Create the Request
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+        Response response = okhttpClient.newCall(request).execute();
+        return response.body().string();
 
-		public MySSLSocketFactory(KeyStore truststore)
-				throws NoSuchAlgorithmException, KeyManagementException,
-				KeyStoreException, UnrecoverableKeyException {
-			super(truststore);
+    }
 
-			TrustManager tm = new X509TrustManager() {
-				public void checkClientTrusted(X509Certificate[] chain,
-						String authType) {
-				}
-
-				public void checkServerTrusted(X509Certificate[] chain,
-						String authType) throws CertificateException {
-				}
-
-				public X509Certificate[] getAcceptedIssuers() {
-					return null;
-				}
-			};
-
-			sslContext.init(null, new TrustManager[] { tm }, null);
-		}
-
-		@Override
-		public Socket createSocket(Socket socket, String host, int port,
-				boolean autoClose) throws IOException {
-			return sslContext.getSocketFactory().createSocket(socket, host,
-					port, autoClose);
-		}
-
-		@Override
-		public Socket createSocket() throws IOException {
-			return sslContext.getSocketFactory().createSocket();
-		}
-	}
+    @Override
+    public void setFormat(Format format) {
+        this.format = format;
+    }
 }
