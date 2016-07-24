@@ -52,7 +52,11 @@ public class HTTPNetworkManager implements NetworkManager {
                 .url(url)
                 .build();
         Response response = okhttpClient.newCall(request).execute();
-        return response.body().string();
+        if (response.isSuccessful()) {
+            return response.body().string();
+        } else {
+            return response.message();
+        }
     }
 
     @Override
@@ -68,14 +72,17 @@ public class HTTPNetworkManager implements NetworkManager {
             RequestBody body = formBuilder.build();
             Request request = new Request.Builder()
                     .header(ACCEPT_HEADER, format.getHTTPContentType())
-                    .header("Content-Type", POST_CONTENT_TYPE)
                     .url(url)
                     .post(body)
                     .build();
             Response response = null;
 
             response = okhttpClient.newCall(request).execute();
-            return response.body().string();
+            if (response.isSuccessful()) {
+                return response.body().string();
+            } else {
+                return response.message();
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -111,7 +118,11 @@ public class HTTPNetworkManager implements NetworkManager {
                 .post(requestBody)
                 .build();
         Response response = okhttpClient.newCall(request).execute();
-        return response.body().string();
+        if (response.isSuccessful()) {
+            return response.body().string();
+        } else {
+            return response.message();
+        }
 
     }
 

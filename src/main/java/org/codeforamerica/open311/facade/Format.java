@@ -7,7 +7,7 @@ package org.codeforamerica.open311.facade;
  * 
  */
 public enum Format {
-	XML("xml", "text/xml"), JSON("json", "application/json");
+	XML("xml", "application/xml"), JSON("json", "application/json");
 
 	private String description;
 	private String httpContentType;
