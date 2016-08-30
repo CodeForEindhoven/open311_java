@@ -74,7 +74,7 @@ public class APIWrapper {
         this.jurisdictionId = jurisdictionId;
         this.apiKey = apiKey;
         this.urlBuilder = new URLBuilder(endpointUrl, this.jurisdictionId,
-                format.toString());
+                format);
     }
 
     public String getEndpointUrl() {
@@ -109,7 +109,7 @@ public class APIWrapper {
         logManager.logInfo(this,
                 "Changing wrapper format to " + format.toString());
         urlBuilder = new URLBuilder(endpointUrl, jurisdictionId,
-                format.toString());
+                format);
     }
 
     /**
@@ -380,11 +380,15 @@ public class APIWrapper {
     private POSTServiceRequestResponse postServiceRequestInternal(HttpUrl url,
                                                                   Map<String, String> arguments, List<Attribute> attributes)
             throws APIWrapperException, MalformedURLException {
-        if (apiKey.length() > 0) {
-            arguments.put("api_key", apiKey);
+        if(apiKey != null) {
+            if (apiKey.length() > 0) {
+                arguments.put("api_key", apiKey);
+            }
         }
-        if (jurisdictionId.length() > 0) {
-            arguments.put("jurisdiction_id", jurisdictionId);
+        if(jurisdictionId != null) {
+            if (jurisdictionId.length() > 0) {
+                arguments.put("jurisdiction_id", jurisdictionId);
+            }
         }
         Map<String, String> postArguments = urlBuilder
                 .buildPostServiceRequestBody(arguments, attributes);
