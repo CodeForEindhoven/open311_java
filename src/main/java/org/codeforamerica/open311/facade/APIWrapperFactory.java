@@ -53,7 +53,7 @@ public class APIWrapperFactory {
      */
     private Format format = null;
     private String apiKey = "";
-    private NetworkManager networkManager = new HTTPNetworkManager(Format.XML);
+    private NetworkManager networkManager = new HTTPNetworkManager();
     /**
      * Suitable cache (depends on the execution environment).
      */
@@ -74,8 +74,6 @@ public class APIWrapperFactory {
      */
     public APIWrapperFactory(String endpointUrl) {
         this.endpointUrl = endpointUrl;
-        this.jurisdictionId = "";
-        this.format = Format.XML;
     }
 
     /**
@@ -86,7 +84,7 @@ public class APIWrapperFactory {
      */
     public APIWrapperFactory(String endpointUrl, String jurisdictionId) {
         this(endpointUrl);
-        this.jurisdictionId = jurisdictionId == null ? "" : jurisdictionId;
+        this.jurisdictionId = jurisdictionId;
     }
 
     /**
@@ -125,8 +123,6 @@ public class APIWrapperFactory {
      */
     public APIWrapperFactory(City city) {
         this.city = city;
-        this.endpointType = EndpointType.PRODUCTION;
-        this.format = Format.XML;
     }
 
     /**
@@ -173,7 +169,6 @@ public class APIWrapperFactory {
      */
     public APIWrapperFactory setNetworkManager(NetworkManager networkManager) {
         this.networkManager = networkManager;
-        this.networkManager.setFormat(Format.XML);
         return this;
     }
 
@@ -236,6 +231,8 @@ public class APIWrapperFactory {
                 "Building a wrapper from the given endpoint url: "
                         + endpointUrl + ", jurisdiction_id: \""
                         + jurisdictionId + "\", format: " + format);
+        networkManager.setFormat(format);
+
         return activateLoginIfRequested(createMostSuitableWrapper(endpointUrl,
                 format, EndpointType.UNKNOWN, DataParserFactory.getInstance()
                         .buildDataParser(format), networkManager, cache,
@@ -264,7 +261,7 @@ public class APIWrapperFactory {
         try {
             logManager.logInfo(this, "Getting the service discovery file.");
             DataParser dataParser = DataParserFactory.getInstance()
-                    .buildDataParser(Format.XML);
+                    .buildDataParser(format);
             ServiceDiscoveryInfo serviceDiscoveryInfo;
             serviceDiscoveryInfo = cache
                     .retrieveCachedServiceDiscoveryInfo(city);
