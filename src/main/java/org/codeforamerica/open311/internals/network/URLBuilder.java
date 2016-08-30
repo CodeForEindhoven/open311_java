@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codeforamerica.open311.facade.Format;
 import org.codeforamerica.open311.facade.data.Attribute;
 
 /**
@@ -25,9 +26,9 @@ public class URLBuilder {
 	private static final String GET_SERVICE_REQUESTS = "requests";
 	private String baseUrl;
 	private String jurisdictionId;
-	private String format;
+	private Format format;
 
-	public URLBuilder(String baseUrl, String jurisdictionId, String format) {
+	public URLBuilder(String baseUrl, String jurisdictionId, Format format) {
 		this.baseUrl = baseUrl;
 		this.jurisdictionId = jurisdictionId;
 		this.format = format;
@@ -42,7 +43,7 @@ public class URLBuilder {
 	 *             format...) is not correct.
 	 */
 	public HttpUrl buildGetServiceListUrl() throws MalformedURLException {
-		String url = baseUrl + "/" + GET_SERVICE_LIST + "." + format;
+		String url = baseUrl + "/" + GET_SERVICE_LIST + "." + format.toString();
 		return HttpUrl.parse(addJurisdictionId(url, jurisdictionId));
 	}
 
@@ -59,7 +60,7 @@ public class URLBuilder {
 	public HttpUrl buildGetServiceDefinitionUrl(String serviceCode)
 			throws MalformedURLException {
 		String url = baseUrl + "/" + GET_SERVICE_DEFINITION + "/" + serviceCode
-				+ "." + format;
+				+ "." + format.toString();
 		return HttpUrl.parse(addJurisdictionId(url, jurisdictionId));
 	}
 
@@ -105,9 +106,11 @@ public class URLBuilder {
 	 */
 	public HttpUrl buildGetServiceRequests(Map<String, String> arguments)
 			throws MalformedURLException {
-		if (jurisdictionId.length() > 0) {
-			arguments.put("jurisdiction_id", jurisdictionId);
-		}
+		if(jurisdictionId != null) {
+            if (jurisdictionId.length() > 0) {
+                arguments.put("jurisdiction_id", jurisdictionId);
+            }
+        }
 		return buildUrl(baseUrl + "/" + GET_SERVICE_REQUESTS + "." + format,
 				arguments);
 	}
@@ -223,7 +226,7 @@ public class URLBuilder {
 	 * @return The new url.
 	 */
 	private String addJurisdictionId(String url, String jurisdictionId) {
-		if (jurisdictionId.length() > 0) {
+		if (jurisdictionId != null && jurisdictionId.length() > 0) {
 			return url += "?jurisdiction_id=" + jurisdictionId;
 		}
 		return url;
