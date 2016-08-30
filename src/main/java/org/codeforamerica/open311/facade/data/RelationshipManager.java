@@ -92,9 +92,11 @@ public class RelationshipManager {
 		}
 		try {
 			return wrapper.getServiceDefinition(service.getServiceCode());
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-        return null;
+		return null;
 	}
 }
