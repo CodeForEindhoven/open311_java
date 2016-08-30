@@ -1,52 +1,3 @@
-/*
-  <groupId>org.codeforamerica.open311</groupId>
-  <artifactId>jreport</artifactId>
-  <packaging>jar</packaging>
-  <version>0.0.5-SNAPSHOT</version>
-  <name>Open311 GeoReport wrapper</name>
-  <url>https://github.com/codeforamerica/open311_java</url>
-  <description>
-  A Java language binding (wrapper) to the Open311 GeoReport REST API.
-  </description>
-  <scm>
-    <connection>scm:git:git@github.com:codeforamerica/open311_java.git</connection>
-    <developerConnection>scm:git:git@github.com:codeforamerica/open311_java.git</developerConnection>
-    <url>https://github.com/codeforamerica/open311_java</url>
-    <tag>HEAD</tag>
-  </scm>
-  <ciManagement>
-    <system>Travis CI</system>
-    <url>https://travis-ci.org/codeforamerica/open311_java</url>
-  </ciManagement>
-  <issueManagement>
-    <url>https://github.com/codeforamerica/open311_java/issues</url>
-    <system>GitHub Issues</system>
-  </issueManagement>
-  <organization>
-    <name>Code for America</name>
-    <url>http://codeforamerica.org/</url>
-  </organization>
-  <inceptionYear>2013</inceptionYear>
-  <developers>
-    <developer>
-      <id>ycombinator</id>
-      <name>Shaunak Kashyap</name>
-      <email>shaunak@codeforamerica.com</email>
-      <url>https://github.com/ycombinator</url>
-    </developer>
-    <developer>
-      <email>santimunin@gmail.com</email>
-      <name>Santiago Munín</name>
-      <url>https://github.com/santimunin</url>
-      <id>santimunin</id>
-    </developer>
-  </developers>
-  <licenses>
-    <license>
-      <name>Code for America Software License</name>
-      <url>https://raw.github.com/codeforamerica/open311_java/master/LICENSE.md</url>
-    </license>
-*/
 apply plugin: 'java'
 
 dependencies {
@@ -59,4 +10,6 @@ dependencies {
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.5'
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.5'
     testCompile 'junit:junit:4.12'
+    sourceCompatibility = JavaVersion.VERSION_1_6
+    targetCompatibility = JavaVersion.VERSION_1_6
 }
