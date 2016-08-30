@@ -1,6 +1,7 @@
 package org.codeforamerica.open311.internals.network;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
@@ -13,10 +14,19 @@ import okhttp3.Response;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.codeforamerica.open311.facade.Format;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * Implementation using the <a href="http://square.github.io/okhttp/">
@@ -32,16 +42,52 @@ public class HTTPNetworkManager implements NetworkManager {
     private static final String ACCEPT_HEADER = "Accept";
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
 
+    public X509TrustManager provideX509TrustManager() {
+        try {
+            TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            factory.init((KeyStore) null);
+            TrustManager[] trustManagers = factory.getTrustManagers();
+            return (X509TrustManager) trustManagers[0];
+        } catch (NoSuchAlgorithmException exception) {
+            Log.e(getClass().getSimpleName(), "not trust manager available", exception);
+        } catch (KeyStoreException exception) {
+            Log.e(getClass().getSimpleName(), "not trust manager available", exception);
+        }
+
+        return null;
+    }
+
+    public OkHttpClient provideHttpClient(TLSSocketFactory sslSocketFactory, X509TrustManager trustManager) {
+        return new OkHttpClient.Builder()
+                .sslSocketFactory(sslSocketFactory, trustManager)
+                .build();
+    }
+
+    private OkHttpClient getHttpClient() {
+        try {
+            TLSSocketFactory tlsSocketFactory = new TLSSocketFactory(provideX509TrustManager());
+            return provideHttpClient(tlsSocketFactory, provideX509TrustManager());
+        } catch (KeyManagementException e) {
+            Log.e(getClass().getSimpleName(), "not tls ssl socket factory available", e);
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(getClass().getSimpleName(), "not tls ssl socket factory available", e);
+        }
+        return null;
+    }
+
     public HTTPNetworkManager() {
-        this.okhttpClient = new OkHttpClient();
+        this.okhttpClient = getHttpClient();
     }
-    public HTTPNetworkManager(Format format) {
-        this.format = format;
-        this.okhttpClient = new OkHttpClient();
-    }
+
+//    public HTTPNetworkManager(Format format) {
+//        this.format = format;
+//        this.okhttpClient = getHttpClient();
+//    }
+
     public HTTPNetworkManager(Bitmap bitmap) {
         this.bitmap = bitmap;
-        this.okhttpClient = new OkHttpClient();
+        this.okhttpClient = getHttpClient();
+
     }
 
     @Override
@@ -61,7 +107,7 @@ public class HTTPNetworkManager implements NetworkManager {
 
     @Override
     public String doPost(HttpUrl url, Map<String, String> parameters) throws IOException {
-        if(this.bitmap != null){
+        if (this.bitmap != null) {
             return doPost(url, parameters, bitmap);
         }
         try {
@@ -75,7 +121,7 @@ public class HTTPNetworkManager implements NetworkManager {
                     .url(url)
                     .post(body)
                     .build();
-            Response response = null;
+            Response response;
 
             response = okhttpClient.newCall(request).execute();
             if (response.isSuccessful()) {
