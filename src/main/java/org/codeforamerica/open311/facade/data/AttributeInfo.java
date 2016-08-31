@@ -1,22 +1,31 @@
 package org.codeforamerica.open311.facade.data;
 
+import com.google.gson.annotations.SerializedName;
+
+import org.codeforamerica.open311.internals.parsing.DataParser;
+
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Map.Entry;
 
 /**
  * Represents a single attribute of a service definition.
- * 
+ *
  * @author Santiago Munín <santimunin@gmail.com>
- * 
+ *
  */
 public class AttributeInfo implements Serializable {
 
 	private static final long serialVersionUID = -6704474615491645869L;
+    @SerializedName(DataParser.VARIABLE_TAG)
 	private Boolean variable;
+    @SerializedName(DataParser.CODE_TAG)
 	private String code;
+    @SerializedName(DataParser.DATATYPE_TAG)
 	private Datatype datatype;
+    @SerializedName(DataParser.REQUIRED_TAG)
 	private Boolean required;
+    @SerializedName(DataParser.DATATYPE_DESCRIPTION_TAG)
 	private String datatypeDescription;
 	private Integer order;
 	private String description;
@@ -92,7 +101,7 @@ public class AttributeInfo implements Serializable {
 
 		/**
 		 * Returns an instance of this class from a given string.
-		 * 
+		 *
 		 * @param datatype
 		 *            String representation of the datatype.
 		 * @return <code>null</code> if the string is not one of the contained
