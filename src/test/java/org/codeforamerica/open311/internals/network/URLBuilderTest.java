@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.codeforamerica.open311.facade.Format;
 import org.codeforamerica.open311.facade.data.Attribute;
 import org.codeforamerica.open311.facade.data.MultiValueAttribute;
 import org.codeforamerica.open311.facade.data.SingleValueAttribute;
@@ -25,7 +26,7 @@ import org.junit.Test;
 public class URLBuilderTest {
 
 	private static final String BASE_URL = "https://api.city.gov/dev/v2";
-	private static final String FORMAT = "xml";
+	private static final Format FORMAT = Format.XML;
 	private static final String JURISDICTION_ID = "city.gov";
 	private URLBuilder builder = new URLBuilder(BASE_URL, JURISDICTION_ID,
 			FORMAT);

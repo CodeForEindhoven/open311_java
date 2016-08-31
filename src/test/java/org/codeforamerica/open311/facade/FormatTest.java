@@ -20,13 +20,13 @@ public class FormatTest {
 
 	@Test
 	public void HTTPContentTypeTest() {
-		assertEquals(Format.XML.getHTTPContentType(), "text/xml");
+		assertEquals(Format.XML.getHTTPContentType(), "application/xml");
 		assertEquals(Format.JSON.getHTTPContentType(), "application/json");
 	}
 
 	@Test
 	public void getFromStringTest() {
-		assertEquals(Format.getFromHTTPContentTypeString("text/xml"),
+		assertEquals(Format.getFromHTTPContentTypeString("application/xml"),
 				Format.XML);
 		assertEquals(Format.getFromHTTPContentTypeString("application/json"),
 				Format.JSON);

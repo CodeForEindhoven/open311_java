@@ -30,7 +30,7 @@ import org.junit.Test;
  * @author Santiago Munín <santimunin@gmail.com>
  * 
  */
-public class APIWrapperTest {
+public class APIWrapperXMLTest {
 
 	private static APIWrapper wrapper, errorWrapper, apierrorWrapper;
 
@@ -38,14 +38,14 @@ public class APIWrapperTest {
 	public static void testInitialization() {
 		System.out.println("[API WRAPPER TEST] Starts");
 		wrapper = new APIWrapper("http://www.fakeurl/", Format.XML,
-				EndpointType.TEST, new XMLParser(), new MockNetworkManager(),
+				EndpointType.TEST, new XMLParser(), new MockNetworkManager(Format.XML),
 				new NoCache(), "", "");
 		errorWrapper = new APIWrapper("http://www.fakeurl/simulateIOException",
 				Format.XML, EndpointType.TEST, new XMLParser(),
-				new MockNetworkManager(), new NoCache(), "", "");
+				new MockNetworkManager(Format.XML), new NoCache(), "", "");
 		apierrorWrapper = new APIWrapper("http://www.fakeurl/simulateAPIError",
 				Format.XML, EndpointType.TEST, new XMLParser(),
-				new MockNetworkManager(), new NoCache(), "", "key");
+				new MockNetworkManager(Format.XML), new NoCache(), "", "key");
 	}
 
 	@AfterClass

@@ -259,6 +259,10 @@ public class APIWrapperFactory {
                                             EndpointType endpointType, String apiKey,
                                             NetworkManager networkManager) throws APIWrapperException, ClassNotFoundException {
         try {
+            if (format == null) {
+                logManager.logInfo(this, "format not set, falling back to XML.");
+                format = Format.XML;
+            }
             logManager.logInfo(this, "Getting the service discovery file.");
             DataParser dataParser = DataParserFactory.getInstance()
                     .buildDataParser(format);
