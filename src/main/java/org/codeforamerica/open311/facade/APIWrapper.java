@@ -28,6 +28,7 @@ import org.codeforamerica.open311.internals.logging.LogManager;
 import org.codeforamerica.open311.internals.network.NetworkManager;
 import org.codeforamerica.open311.internals.network.URLBuilder;
 import org.codeforamerica.open311.internals.parsing.DataParser;
+import org.codeforamerica.open311.internals.parsing.DataParserFactory;
 
 /**
  * Base class of the API. This is the entry point to the system. You can build
@@ -57,18 +58,16 @@ public class APIWrapper {
      *
      * @param endpointUrl    Base url of the endpoint.
      * @param type           Type of the server.
-     * @param dataParser     Instance of
      * @param networkManager Network Manager
      */
     /* package */
     APIWrapper(String endpointUrl, Format format,
-               EndpointType type, DataParser dataParser,
+               EndpointType type,
                NetworkManager networkManager, Cache cache, String jurisdictionId,
                String apiKey) {
         super();
         this.endpointUrl = endpointUrl;
         this.type = type;
-        this.dataParser = dataParser;
         this.networkManager = networkManager;
         this.cache = cache;
         this.jurisdictionId = jurisdictionId;
@@ -380,12 +379,12 @@ public class APIWrapper {
     private POSTServiceRequestResponse postServiceRequestInternal(HttpUrl url,
                                                                   Map<String, String> arguments, List<Attribute> attributes)
             throws APIWrapperException, MalformedURLException {
-        if(apiKey != null) {
+        if (apiKey != null) {
             if (apiKey.length() > 0) {
                 arguments.put("api_key", apiKey);
             }
         }
-        if(jurisdictionId != null) {
+        if (jurisdictionId != null) {
             if (jurisdictionId.length() > 0) {
                 arguments.put("jurisdiction_id", jurisdictionId);
             }
@@ -440,6 +439,8 @@ public class APIWrapper {
             logManager.logInfo(this,
                     "HTTP GET response (50 or less first characters)"
                             + cutResponse);
+            dataParser = DataParserFactory.getInstance()
+                    .buildDataParser(networkManager.getFormat());
             return response;
         } catch (IOException e) {
             logManager.logError(this, "HTTP GET error: " + e.getMessage());
@@ -466,6 +467,8 @@ public class APIWrapper {
             logManager.logInfo(this,
                     "HTTP POST response (50 or less first characters)"
                             + cutResponse);
+            dataParser = DataParserFactory.getInstance()
+                    .buildDataParser(networkManager.getFormat());
             return response;
         } catch (IOException e) {
             logManager.logError(this, "HTTP POST error: " + e.getMessage());

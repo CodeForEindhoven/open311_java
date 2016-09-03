@@ -43,6 +43,9 @@ public class URLBuilder {
 	 *             format...) is not correct.
 	 */
 	public HttpUrl buildGetServiceListUrl() throws MalformedURLException {
+		if (format == null){
+			format = format.XML;
+		}
 		String url = baseUrl + "/" + GET_SERVICE_LIST + "." + format.toString();
 		return HttpUrl.parse(addJurisdictionId(url, jurisdictionId));
 	}

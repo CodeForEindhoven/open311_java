@@ -3,6 +3,8 @@ package org.codeforamerica.open311.facade.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.List;
 
 import org.codeforamerica.open311.facade.EndpointType;
 import org.codeforamerica.open311.facade.Format;
+import org.codeforamerica.open311.internals.parsing.DataParser;
 
 /**
  * Wraps the information relative to a single endpoint.
@@ -18,19 +21,24 @@ import org.codeforamerica.open311.facade.Format;
  */
 public class Endpoint implements Serializable, Parcelable {
     private static final long serialVersionUID = -5512681512770606630L;
+    @SerializedName(DataParser.SPECIFICATION_TAG)
     private String specificationUrl;
+    @SerializedName(DataParser.URL_TAG)
     private String url;
+    @SerializedName(DataParser.CHANGESET_TAG)
     private Date changeset;
-    private EndpointType type;
+    @SerializedName(DataParser.TYPE_TAG)
+    private String endpointType;
+    @SerializedName(DataParser.FORMATS_TAG)
     private List<Format> formats;
 
     public Endpoint(String specificationUrl, String url, Date changeset,
-                    EndpointType type, List<Format> formats) {
+                    String type, List<Format> formats) {
         super();
         this.specificationUrl = specificationUrl;
         this.url = url;
+        this.endpointType = type;
         this.changeset = changeset;
-        this.type = type;
         this.formats = formats;
     }
 
@@ -47,7 +55,7 @@ public class Endpoint implements Serializable, Parcelable {
     }
 
     public EndpointType getType() {
-        return type;
+        return EndpointType.getFromString(endpointType);
     }
 
     /**
@@ -84,7 +92,7 @@ public class Endpoint implements Serializable, Parcelable {
         dest.writeString(this.specificationUrl);
         dest.writeString(this.url);
         dest.writeLong(changeset != null ? changeset.getTime() : -1);
-        dest.writeInt(this.type == null ? -1 : this.type.ordinal());
+        dest.writeInt(this.getType() == null ? -1 : this.getType().ordinal());
         dest.writeList(this.formats);
     }
 
@@ -94,7 +102,7 @@ public class Endpoint implements Serializable, Parcelable {
         long tmpChangeset = in.readLong();
         this.changeset = tmpChangeset == -1 ? null : new Date(tmpChangeset);
         int tmpType = in.readInt();
-        this.type = tmpType == -1 ? null : EndpointType.values()[tmpType];
+        this.endpointType = tmpType == -1 ? null : EndpointType.values()[tmpType].toString();
         this.formats = new ArrayList<Format>();
         in.readList(this.formats, List.class.getClassLoader());
     }

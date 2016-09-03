@@ -61,13 +61,18 @@ public interface DataParser {
 	String ACCOUNT_ID_TAG = "account_id";
 	String ERROR_TAG = "error";
 	String DISCOVERY_TAG = "discovery";
+	String API_DISCOVERY_URL_TAG = "api_discovery";
+    String JURISDICTION_ID_TAG = "jurisdiction_id";
 	String CHANGESET_TAG = "changeset";
+    String COUNTRY_TAG = "country";
 	String CONTACT_TAG = "contact";
 	String KEY_SERVICE_TAG = "key_service";
 	String SPECIFICATION_TAG = "specification";
 	String URL_TAG = "url";
 	String FORMAT_TAG = "format";
+    String FORMATS_TAG = "formats";
 	String ENDPOINT_TAG = "endpoint";
+    String ENDPOINTS_TAG = "endpoints";
 	String START_DATE_TAG = "start_date";
 	String END_DATE_TAG = "end_date";
 	String EMAIL_TAG = "email";
@@ -75,6 +80,16 @@ public interface DataParser {
 	String FIRST_NAME_TAG = "first_name";
 	String LAST_NAME_TAG = "last_name";
 	String PHONE_TAG = "phone";
+    String DOCUMENTATION_TAG = "api_documentation";
+    String ISSUETRACKER_TAG = "api_issue_tracker";
+    String KEYREQUEST_TAG = "api_key_request";
+    String VERSION_TAG = "version";
+    String BASE_URL_TAG = "base_url";
+    String TEST_URL_TAG = "test_url";
+    String PRODUCTIONREADY_TAG = "production_ready";
+    String GOVDOMAIN_TAG = "gov_domain";
+    String CITY_TAG = "city";
+    String ID_TAG = "id";
 
 	/**
 	 * Parses the response to the GET service list operation.

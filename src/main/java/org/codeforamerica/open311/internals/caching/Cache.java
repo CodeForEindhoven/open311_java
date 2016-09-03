@@ -2,7 +2,7 @@ package org.codeforamerica.open311.internals.caching;
 
 import java.util.List;
 
-import org.codeforamerica.open311.facade.City;
+import org.codeforamerica.open311.facade.data.City;
 import org.codeforamerica.open311.facade.data.Service;
 import org.codeforamerica.open311.facade.data.ServiceDefinition;
 import org.codeforamerica.open311.facade.data.ServiceDiscoveryInfo;

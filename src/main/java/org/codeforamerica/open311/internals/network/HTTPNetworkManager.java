@@ -23,7 +23,6 @@ import java.util.Map.Entry;
 
 import org.codeforamerica.open311.facade.Format;
 
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
@@ -40,7 +39,7 @@ public class HTTPNetworkManager implements NetworkManager {
     private Bitmap bitmap;
     private static final String FILENAME = "media.jpg";
     private static final String ACCEPT_HEADER = "Accept";
-    private static final String CONTENT_TYPE_HEADER = "Content-Type";
+    //private static final String CONTENT_TYPE_HEADER = "Content-Type";
 
     public X509TrustManager provideX509TrustManager() {
         try {
@@ -49,9 +48,9 @@ public class HTTPNetworkManager implements NetworkManager {
             TrustManager[] trustManagers = factory.getTrustManagers();
             return (X509TrustManager) trustManagers[0];
         } catch (NoSuchAlgorithmException exception) {
-            Log.e(getClass().getSimpleName(), "not trust manager available", exception);
+            Log.e(getClass().getSimpleName(), "no trust manager available", exception);
         } catch (KeyStoreException exception) {
-            Log.e(getClass().getSimpleName(), "not trust manager available", exception);
+            Log.e(getClass().getSimpleName(), "no trust manager available", exception);
         }
 
         return null;
@@ -68,9 +67,9 @@ public class HTTPNetworkManager implements NetworkManager {
             TLSSocketFactory tlsSocketFactory = new TLSSocketFactory(provideX509TrustManager());
             return provideHttpClient(tlsSocketFactory, provideX509TrustManager());
         } catch (KeyManagementException e) {
-            Log.e(getClass().getSimpleName(), "not tls ssl socket factory available", e);
+            Log.e(getClass().getSimpleName(), "no tls ssl socket factory available", e);
         } catch (NoSuchAlgorithmException e) {
-            Log.e(getClass().getSimpleName(), "not tls ssl socket factory available", e);
+            Log.e(getClass().getSimpleName(), "no tls ssl socket factory available", e);
         }
         return null;
     }
@@ -78,11 +77,6 @@ public class HTTPNetworkManager implements NetworkManager {
     public HTTPNetworkManager() {
         this.okhttpClient = getHttpClient();
     }
-
-//    public HTTPNetworkManager(Format format) {
-//        this.format = format;
-//        this.okhttpClient = getHttpClient();
-//    }
 
     public HTTPNetworkManager(Bitmap bitmap) {
         this.bitmap = bitmap;
@@ -93,14 +87,16 @@ public class HTTPNetworkManager implements NetworkManager {
     @Override
     public String doGet(HttpUrl url) throws IOException {
         Request request = new Request.Builder()
-                .header(ACCEPT_HEADER, format.getHTTPContentType())
-                .header(CONTENT_TYPE_HEADER, format.getHTTPContentType())
                 .url(url)
                 .build();
         Response response = okhttpClient.newCall(request).execute();
         if (response.isSuccessful()) {
+            // TODO Get format from response
+            setFormatFromResponse(response);
             return response.body().string();
         } else {
+            // TODO Get format from response
+            setFormatFromResponse(response);
             return response.message();
         }
     }
@@ -117,7 +113,6 @@ public class HTTPNetworkManager implements NetworkManager {
             }
             RequestBody body = formBuilder.build();
             Request request = new Request.Builder()
-                    .header(ACCEPT_HEADER, format.getHTTPContentType())
                     .url(url)
                     .post(body)
                     .build();
@@ -125,8 +120,10 @@ public class HTTPNetworkManager implements NetworkManager {
 
             response = okhttpClient.newCall(request).execute();
             if (response.isSuccessful()) {
+                setFormatFromResponse(response);
                 return response.body().string();
             } else {
+                setFormatFromResponse(response);
                 return response.message();
             }
         } catch (IOException e) {
@@ -175,5 +172,21 @@ public class HTTPNetworkManager implements NetworkManager {
     @Override
     public void setFormat(Format format) {
         this.format = format;
+    }
+
+    public Format getFormat(){
+        return this.format;
+    }
+
+    private void setFormatFromResponse(Response response){
+        if(response.body().contentType().subtype().equals("xml")){
+            this.format = Format.XML;
+        }
+        else if(response.body().contentType().subtype().equals("json")){
+            this.format = Format.JSON;
+        } else {
+            //Default format
+            this.format = Format.XML;
+        }
     }
 }

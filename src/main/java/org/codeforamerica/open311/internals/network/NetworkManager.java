@@ -15,10 +15,10 @@ import org.codeforamerica.open311.facade.Format;
 public interface NetworkManager {
 
 	String POST_CONTENT_TYPE = "application/x-www-form-urlencoded";
-
+    Format format = Format.XML;
 	/**
 	 * Sends a GET HTTP request.
-	 * 
+	 *
 	 * @param url
 	 *            Target.
 	 * @return Server response.
@@ -29,7 +29,7 @@ public interface NetworkManager {
 
 	/**
 	 * Sends a POST HTTP request.
-	 * 
+	 *
 	 * @param url
 	 *            Target.
 	 * @param parameters
@@ -43,9 +43,17 @@ public interface NetworkManager {
 
 	/**
 	 * Sets the desired format of the requests.
-	 * 
+	 *
 	 * @param format
 	 *            A serialization format (XML or JSON).
 	 */
 	void setFormat(Format format);
+
+    /**
+     * Gets the desired format of the requests.
+     *
+     *     A serialization format (XML or JSON).
+     */
+    Format getFormat();
+
 }

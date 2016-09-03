@@ -22,6 +22,7 @@ public class DateParser {
      */
     private DateTimeFormatter[] dateFormats = {
             ISODateTimeFormat.dateTimeNoMillis(),
+            DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ"),
             DateTimeFormat.forPattern("YYYY-MM-DD HH:mm")};
 
     /**

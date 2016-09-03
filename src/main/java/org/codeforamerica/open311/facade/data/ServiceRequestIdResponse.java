@@ -3,6 +3,10 @@ package org.codeforamerica.open311.facade.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
+import org.codeforamerica.open311.internals.parsing.DataParser;
+
 /**
  * Represents an answer to the <a href=
  * "http://wiki.open311.org/GeoReport_v2#GET_service_request_id_from_a_token"
@@ -12,7 +16,9 @@ import android.os.Parcelable;
  * 
  */
 public class ServiceRequestIdResponse implements Parcelable {
+	@SerializedName(DataParser.SERVICE_REQUEST_ID_TAG)
 	private String serviceRequestId;
+	@SerializedName(DataParser.TOKEN_TAG)
 	private String token;
 
 	public ServiceRequestIdResponse(String serviceRequestId, String token) {

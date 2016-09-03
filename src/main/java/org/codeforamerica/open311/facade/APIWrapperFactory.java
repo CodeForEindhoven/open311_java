@@ -4,8 +4,8 @@ import okhttp3.HttpUrl;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 
+import org.codeforamerica.open311.facade.data.City;
 import org.codeforamerica.open311.facade.data.Endpoint;
 import org.codeforamerica.open311.facade.data.ServiceDiscoveryInfo;
 import org.codeforamerica.open311.facade.exceptions.APIWrapperException;
@@ -234,8 +234,7 @@ public class APIWrapperFactory {
         networkManager.setFormat(format);
 
         return activateLoginIfRequested(createMostSuitableWrapper(endpointUrl,
-                format, EndpointType.UNKNOWN, DataParserFactory.getInstance()
-                        .buildDataParser(format), networkManager, cache,
+                format, EndpointType.UNKNOWN, networkManager, cache,
                 jurisdictionId, apiKey));
     }
 
@@ -259,23 +258,23 @@ public class APIWrapperFactory {
                                             EndpointType endpointType, String apiKey,
                                             NetworkManager networkManager) throws APIWrapperException, ClassNotFoundException {
         try {
-            if (format == null) {
-                logManager.logInfo(this, "format not set, falling back to XML.");
-                format = Format.XML;
-            }
-            logManager.logInfo(this, "Getting the service discovery file.");
-            DataParser dataParser = DataParserFactory.getInstance()
-                    .buildDataParser(format);
+            logManager.logInfo(this, "Getting the service discovery.");
+            DataParser dataParser;
             ServiceDiscoveryInfo serviceDiscoveryInfo;
             serviceDiscoveryInfo = cache
                     .retrieveCachedServiceDiscoveryInfo(city);
             if (serviceDiscoveryInfo == null) {
                 logManager
                         .logInfo(this,
-                                "Service discovery file was not cached, downloading it.");
+                                "Service discovery is not cached, downloading it.");
+                HttpUrl discoveryUrl = HttpUrl.parse(city.getDiscoveryUrl());
+
+                guessFormat(discoveryUrl);
+
+                dataParser = DataParserFactory.getInstance()
+                        .buildDataParser(format);
                 serviceDiscoveryInfo = dataParser
-                        .parseServiceDiscovery(networkManager.doGet(HttpUrl.parse(
-                                city.getDiscoveryUrl())));
+                        .parseServiceDiscovery(networkManager.doGet(discoveryUrl));
                 cache.saveServiceDiscovery(city, serviceDiscoveryInfo);
             }
             Endpoint endpoint = serviceDiscoveryInfo
@@ -286,22 +285,11 @@ public class APIWrapperFactory {
                         "No suitable endpoint was found.",
                         Error.NOT_SUITABLE_ENDPOINT_FOUND, null);
             }
-            logManager.logInfo(this, "Selected the most suitable endpoint.");
+            logManager.logInfo(this, "Selected " + endpoint.getUrl() + " as most suitable endpoint.");
             Format format = selectFormat(this.format, endpoint);
-            if (format != Format.XML) {
-                logManager
-                        .logInfo(
-                                this,
-                                "The selected endpoint allows to use the "
-                                        + format
-                                        + " format which is a best option, selecting it.");
-                networkManager.setFormat(format);
-                dataParser = DataParserFactory.getInstance().buildDataParser(
-                        format);
-            }
 
             return activateLoginIfRequested(createMostSuitableWrapper(
-                    endpoint.getUrl(), format, endpointType, dataParser,
+                    endpoint.getUrl(), format, endpointType,
                     networkManager, cache, city.getJurisdictionId(), apiKey));
         } catch (MalformedURLException e) {
             logManager.logError(this, "Problem building the url");
@@ -349,6 +337,24 @@ public class APIWrapperFactory {
         return wrapperInstance;
     }
 
+    /**
+     * Guess the format from the url object
+     * @param httpUrl url to be tested
+     */
+    private void guessFormat(HttpUrl httpUrl){
+        if (format == null) {
+
+            String path = httpUrl.url().getPath();
+            if (path.substring(path.toLowerCase().lastIndexOf(".")).equals(".json")) {
+                logManager.logInfo(this, "format set to JSON.");
+                format = Format.JSON;
+            } else {
+                logManager.logInfo(this, "format set to XML.");
+                format = Format.XML;
+            }
+        }
+    }
+
     public String toString() {
         StringBuilder builder = new StringBuilder("APIWrapperFactory");
         if (city != null) {
@@ -361,16 +367,18 @@ public class APIWrapperFactory {
     }
 
     private APIWrapper createMostSuitableWrapper(String endpointUrl,
-                                                 Format format, EndpointType endpointType, DataParser dataParser,
+                                                 Format format, EndpointType endpointType,
                                                  NetworkManager networkManager, Cache cache, String jurisdictionId,
                                                  String apiKey) {
-        if (city == City.BLOOMINGTON && format == Format.XML) {
-            logManager
-                    .logInfo(
-                            this,
-                            "The selected endpoint's responses are not compatible with XML so it is necessary to skip invalid characters, using an specialized kind of APIWrapper.");
-            return new InvalidXMLWrapper(endpointUrl, format, endpointType,
-                    dataParser, networkManager, cache, jurisdictionId, apiKey);
+        if (city != null) {
+            if (city.getCityName().equals(City.BLOOMINGTON.getCityName()) && format.equals(Format.XML)) {
+                logManager
+                        .logInfo(
+                                this,
+                                "The selected endpoint's responses are not compatible with XML so it is necessary to skip invalid characters, using an specialized kind of APIWrapper.");
+                return new InvalidXMLWrapper(endpointUrl, format, endpointType,
+                        networkManager, cache, jurisdictionId, apiKey);
+            }
         }
         if (endpointUrl.contains("seeclickfix") && format == Format.JSON) {
             logManager
@@ -378,12 +386,10 @@ public class APIWrapperFactory {
                             this,
                             "The selected endpoint's JSON responses are not compatible with the standard, selecting the XML format.");
             format = Format.XML;
-            dataParser = DataParserFactory.getInstance()
-                    .buildDataParser(format);
             networkManager.setFormat(format);
         }
 
-        return new APIWrapper(endpointUrl, format, endpointType, dataParser,
+        return new APIWrapper(endpointUrl, format, endpointType,
                 networkManager, cache, jurisdictionId, apiKey);
 
     }

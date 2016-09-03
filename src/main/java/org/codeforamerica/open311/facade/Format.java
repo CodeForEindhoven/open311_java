@@ -1,13 +1,18 @@
 package org.codeforamerica.open311.facade;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Represent the different formats allowed by the library.
- * 
+ *
  * @author Santiago Munín <santimunin@gmail.com>
- * 
+ *
  */
 public enum Format {
-	XML("xml", "application/xml"), JSON("json", "application/json");
+    @SerializedName("application/xml")
+	XML("xml", "application/xml"),
+    @SerializedName("application/json")
+    JSON("json", "application/json");
 
 	private String description;
 	private String httpContentType;
@@ -31,7 +36,7 @@ public enum Format {
 
 	/**
 	 * Builds an instance from the content type.
-	 * 
+	 *
 	 * @param contentTypeString
 	 *            A string representing a content type.
 	 * @return <code>null</code> if the given content type is not allowed.

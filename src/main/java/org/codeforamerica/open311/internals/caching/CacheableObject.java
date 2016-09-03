@@ -27,9 +27,11 @@ public class CacheableObject implements Serializable {
 
     public CacheableObject(String base64object) {
         try {
-            CacheableObject thisObject = (CacheableObject) Base64.decodeToObject(base64object);
-            this.object = thisObject.object;
-            this.expirationTime = thisObject.expirationTime;
+            if(base64object != null) {
+                CacheableObject thisObject = (CacheableObject) Base64.decodeToObject(base64object);
+                this.object = thisObject.object;
+                this.expirationTime = thisObject.expirationTime;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -35,15 +35,15 @@ public class POSTServiceRequestResponse {
     }
 
     public String getToken() {
-        return token;
+        return (token == null) ? "" : token;
     }
 
     public String getServiceNotice() {
-        return serviceNotice;
+        return (serviceNotice == null) ? "" : serviceNotice;
     }
 
     public String getAccountId() {
-        return accountId;
+        return (accountId == null) ? "" : accountId;
     }
 
 }

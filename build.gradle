@@ -1,14 +1,5 @@
 apply plugin: 'java'
 
-task init (dependsOn: jar, type: JavaExec) {
-    println 'Compiling City class from servers/cities.json'
-    classpath files('./extras/city_enum_builder.jar')
-    main = 'org.codeforamerica.open311.city_enum_builder.EnumBuilder'
-    args 'servers/cities.json', 'src/main/java/org/codeforamerica/open311/facade/City.java'
-}
-
-
-tasks.init.execute()
 dependencies {
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -24,4 +15,3 @@ dependencies {
     sourceCompatibility = JavaVersion.VERSION_1_6
     targetCompatibility = JavaVersion.VERSION_1_6
 }
-

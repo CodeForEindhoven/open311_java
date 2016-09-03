@@ -27,6 +27,7 @@ import org.codeforamerica.open311.facade.data.ServiceDiscoveryInfo;
 import org.codeforamerica.open311.facade.data.ServiceRequest;
 import org.codeforamerica.open311.facade.data.ServiceRequest.Status;
 import org.codeforamerica.open311.facade.data.ServiceRequestIdResponse;
+import org.codeforamerica.open311.facade.data.Value;
 import org.codeforamerica.open311.facade.exceptions.DataParsingException;
 import org.codeforamerica.open311.facade.exceptions.GeoReportV2Error;
 import org.w3c.dom.Document;
@@ -152,16 +153,17 @@ public class XMLParser extends AbstractParser {
                         ORDER_TAG));
                 String description = getTagContent(attributeElement,
                         DESCRIPTION_TAG);
-                Map<String, String> values = new HashMap<String, String>();
+
                 NodeList valuesNodeList = attributeElement
                         .getElementsByTagName(VALUE_TAG);
+                Value[] values = new Value[valuesNodeList.getLength()];
                 for (int k = 0; k < valuesNodeList.getLength(); k++) {
                     Node valueNode = valuesNodeList.item(k);
                     if (valueNode.getNodeType() == Node.ELEMENT_NODE) {
                         Element valueElement = (Element) valueNode;
                         String key = getTagContent(valueElement, KEY_TAG);
                         String name = getTagContent(valueElement, NAME_TAG);
-                        values.put(key, name);
+                        values[k] = new Value(key, name);
                     }
                 }
                 attributes.add(new AttributeInfo(variable, code, datatype,
@@ -412,8 +414,8 @@ public class XMLParser extends AbstractParser {
                 String url = getTagContent(endpointElement, URL_TAG);
                 Date changeset = dateParser.parseDate(getTagContent(
                         endpointElement, CHANGESET_TAG));
-                EndpointType type = EndpointType.getFromString(getTagContent(
-                        endpointElement, TYPE_TAG));
+                String type = getTagContent(
+                        endpointElement, TYPE_TAG);
                 NodeList formatNodes = endpointElement
                         .getElementsByTagName(FORMAT_TAG);
                 List<Format> formats = new LinkedList<Format>();

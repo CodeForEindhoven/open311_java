@@ -1,9 +1,5 @@
 package org.codeforamerica.open311.facade;
 
-import org.codeforamerica.open311.facade.APIWrapper;
-import org.codeforamerica.open311.facade.EndpointType;
-import org.codeforamerica.open311.facade.Format;
-import org.codeforamerica.open311.facade.GlobalTests;
 import org.codeforamerica.open311.facade.data.POSTServiceRequestResponse;
 import org.codeforamerica.open311.facade.data.Service;
 import org.codeforamerica.open311.facade.data.Service.Type;
@@ -17,7 +13,7 @@ import org.codeforamerica.open311.facade.exceptions.APIWrapperException;
 import org.codeforamerica.open311.internals.caching.NoCache;
 import org.codeforamerica.open311.internals.network.MockNetworkManager;
 import org.codeforamerica.open311.internals.parsing.DataParser;
-import org.codeforamerica.open311.internals.parsing.XMLParser;
+import org.codeforamerica.open311.internals.parsing.JSONParser;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,148 +27,147 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Test of the APIWrapper (uses a {@link MockNetworkManager}).
- * 
+ *
  * @author Santiago Munín <santimunin@gmail.com>
- * 
  */
 public class APIWrapperJSONTest {
 
-	private static APIWrapper wrapper, errorWrapper, apierrorWrapper;
+    private static APIWrapper wrapper, errorWrapper, apierrorWrapper;
 
-	@BeforeClass
-	public static void testInitialization() {
-		System.out.println("[API WRAPPER TEST] Starts");
-		wrapper = new APIWrapper("http://www.fakeurl/", Format.XML,
-				EndpointType.TEST, new XMLParser(), new MockNetworkManager(),
-				new NoCache(), "", "");
-		errorWrapper = new APIWrapper("http://www.fakeurl/simulateIOException",
-				Format.XML, EndpointType.TEST, new XMLParser(),
-				new MockNetworkManager(), new NoCache(), "", "");
-		apierrorWrapper = new APIWrapper("http://www.fakeurl/simulateAPIError",
-				Format.XML, EndpointType.TEST, new XMLParser(),
-				new MockNetworkManager(), new NoCache(), "", "key");
-	}
+    @BeforeClass
+    public static void testInitialization() {
+        System.out.println("[API WRAPPER TEST] Starts");
+        wrapper = new APIWrapper("http://www.fakeurl/", Format.JSON,
+                EndpointType.TEST, new MockNetworkManager(Format.JSON),
+                new NoCache(), "", "");
+        errorWrapper = new APIWrapper("http://www.fakeurl/simulateIOException",
+                Format.JSON, EndpointType.TEST,
+                new MockNetworkManager(Format.JSON), new NoCache(), "", "");
+        apierrorWrapper = new APIWrapper("http://www.fakeurl/simulateAPIError",
+                Format.JSON, EndpointType.TEST,
+                new MockNetworkManager(Format.JSON), new NoCache(), "", "key");
+    }
 
-	@AfterClass
-	public static void testFinish() {
-		System.out.println("[API WRAPPER TEST] Ends");
-	}
+    @AfterClass
+    public static void testFinish() {
+        System.out.println("[API WRAPPER TEST] Ends");
+    }
 
-	@Test
-	public void getWrapperInfoTest() {
-		assertEquals(wrapper.getWrapperInfo(), "http://www.fakeurl/" + " - "
-				+ EndpointType.TEST.toString());
-	}
+    @Test
+    public void getWrapperInfoTest() {
+        assertEquals(wrapper.getWrapperInfo(), "http://www.fakeurl/" + " - "
+                + EndpointType.TEST.toString());
+    }
 
-	@Test
-	public void getServicesTest() throws APIWrapperException, IOException, ClassNotFoundException {
-		List<Service> services = wrapper.getServiceList();
-		GlobalTests.serviceListTest(services);
-	}
+    @Test
+    public void getServicesTest() throws APIWrapperException, IOException, ClassNotFoundException {
+        List<Service> services = wrapper.getServiceList();
+        GlobalTests.serviceListTest(services);
+    }
 
-	@Test
-	public void getServiceDefinitionTest() throws APIWrapperException, IOException, ClassNotFoundException {
-		ServiceDefinition serviceDefinition = wrapper
-				.getServiceDefinition("001");
-		GlobalTests.serviceDefinitionTest(serviceDefinition);
-	}
+    @Test
+    public void getServiceDefinitionTest() throws APIWrapperException, IOException, ClassNotFoundException {
+        ServiceDefinition serviceDefinition = wrapper
+                .getServiceDefinition("001");
+        GlobalTests.serviceDefinitionTest(serviceDefinition);
+    }
 
-	@Test
-	public void getServiceRequestIdFromTokenTest() throws APIWrapperException {
-		ServiceRequestIdResponse id = wrapper
-				.getServiceRequestIdFromToken("222");
-		GlobalTests.serviceIdFromTokenTest(id);
-	}
+    @Test
+    public void getServiceRequestIdFromTokenTest() throws APIWrapperException {
+        ServiceRequestIdResponse id = wrapper
+                .getServiceRequestIdFromToken("222");
+        GlobalTests.serviceIdFromTokenTest(id);
+    }
 
-	@Test
-	public void getServiceRequests() throws APIWrapperException,
-			IOException, ClassNotFoundException {
-		GETServiceRequestsFilter filter = new GETServiceRequestsFilter();
-		// Null parameters or empty strings doesn't count
-		assertTrue(filter.getOptionalParametersMap().equals(
-				filter.setEndDate(null).setStartDate(null).setServiceCode("")
-						.setServiceCode(null).setStatus(null)
-						.setServiceRequestId("").setServiceRequestId(null)
-						.getOptionalParametersMap()));
-		filter = filter.setStatus(Status.OPEN);
-		assertTrue(filter.getOptionalParametersMap().containsKey(
-				DataParser.STATUS_TAG));
-		assertEquals(filter.getOptionalParametersMap().get("status"), "open");
-		List<ServiceRequest> serviceRequests = wrapper.getServiceRequests(null);
-		GlobalTests.serviceRequestsTest(serviceRequests);
-	}
+    @Test
+    public void getServiceRequests() throws APIWrapperException,
+            IOException, ClassNotFoundException {
+        GETServiceRequestsFilter filter = new GETServiceRequestsFilter();
+        // Null parameters or empty strings doesn't count
+        assertTrue(filter.getOptionalParametersMap().equals(
+                filter.setEndDate(null).setStartDate(null).setServiceCode("")
+                        .setServiceCode(null).setStatus(null)
+                        .setServiceRequestId("").setServiceRequestId(null)
+                        .getOptionalParametersMap()));
+        filter = filter.setStatus(Status.OPEN);
+        assertTrue(filter.getOptionalParametersMap().containsKey(
+                DataParser.STATUS_TAG));
+        assertEquals(filter.getOptionalParametersMap().get("status"), "open");
+        List<ServiceRequest> serviceRequests = wrapper.getServiceRequests(null);
+        GlobalTests.serviceRequestsTest(serviceRequests);
+    }
 
-	@Test
-	public void getServiceRequest() throws APIWrapperException,
-			IOException, ClassNotFoundException {
-		ServiceRequest serviceRequest = wrapper.getServiceRequest("006");
-		GlobalTests.serviceRequestTest(serviceRequest);
-	}
+    @Test
+    public void getServiceRequest() throws APIWrapperException,
+            IOException, ClassNotFoundException {
+        ServiceRequest serviceRequest = wrapper.getServiceRequest("006");
+        GlobalTests.serviceRequestTest(serviceRequest);
+    }
 
-	@Test
-	public void postServiceRequest() throws APIWrapperException {
+    @Test
+    public void postServiceRequest() throws APIWrapperException {
 
-		POSTServiceRequestData postData = new POSTServiceRequestData("001", 1,
-				null);
-		assertEquals(postData.getBodyRequestParameters(),
-				postData.setAddress("").setDescription("").setDeviceId("")
-						.setMediaUrl("").getBodyRequestParameters());
-		assertEquals(postData.getBodyRequestParameters().get("address_id"), "1");
-		assertEquals(postData.getBodyRequestParameters().size(), 2);
-		POSTServiceRequestResponse response = wrapper
-				.postServiceRequest(postData);
-		GlobalTests.postServiceRequestsTest(response);
+        POSTServiceRequestData postData = new POSTServiceRequestData("001", 1,
+                null);
+        assertEquals(postData.getBodyRequestParameters(),
+                postData.setAddress("").setDescription("").setDeviceId("")
+                        .setMediaUrl("").getBodyRequestParameters());
+        assertEquals(postData.getBodyRequestParameters().get("address_id"), "1");
+        assertEquals(postData.getBodyRequestParameters().size(), 2);
+        POSTServiceRequestResponse response = wrapper
+                .postServiceRequest(postData);
+        GlobalTests.postServiceRequestsTest(response);
 
-		postData = new POSTServiceRequestData("001", "address!", null);
-		assertEquals(postData.getBodyRequestParameters().size(), 2);
-		assertEquals(postData.getBodyRequestParameters().get("address"),
-				"address!");
-		response = wrapper.postServiceRequest(postData);
-		GlobalTests.postServiceRequestsTest(response);
+        postData = new POSTServiceRequestData("001", "address!", null);
+        assertEquals(postData.getBodyRequestParameters().size(), 2);
+        assertEquals(postData.getBodyRequestParameters().get("address"),
+                "address!");
+        response = wrapper.postServiceRequest(postData);
+        GlobalTests.postServiceRequestsTest(response);
 
-		postData = new POSTServiceRequestData("001", 12F, 8F, null);
-		assertEquals(postData.getBodyRequestParameters().size(), 3);
-		assertTrue(Float
-				.valueOf(postData.getBodyRequestParameters().get("lat")) == 12F);
-		assertTrue(Float.valueOf(postData.getBodyRequestParameters()
-				.get("long")) == 8F);
-		assertEquals(postData.setDeviceId("device id works!")
-				.getBodyRequestParameters().get("device_id"),
-				"device id works!");
-		response = wrapper.postServiceRequest(postData);
-		GlobalTests.postServiceRequestsTest(response);
-	}
+        postData = new POSTServiceRequestData("001", 12F, 8F, null);
+        assertEquals(postData.getBodyRequestParameters().size(), 3);
+        assertTrue(Float
+                .valueOf(postData.getBodyRequestParameters().get("lat")) == 12F);
+        assertTrue(Float.valueOf(postData.getBodyRequestParameters()
+                .get("long")) == 8F);
+        assertEquals(postData.setDeviceId("device id works!")
+                        .getBodyRequestParameters().get("device_id"),
+                "device id works!");
+        response = wrapper.postServiceRequest(postData);
+        GlobalTests.postServiceRequestsTest(response);
+    }
 
-	@Test(expected = APIWrapperException.class)
-	public void postServiceRequestWithIOException() throws APIWrapperException {
-		errorWrapper.postServiceRequest(new POSTServiceRequestData("001", 0,
-				null));
-	}
+    @Test(expected = APIWrapperException.class)
+    public void postServiceRequestWithIOException() throws APIWrapperException {
+        errorWrapper.postServiceRequest(new POSTServiceRequestData("001", 0,
+                null));
+    }
 
-	@Test
-	public void apiErrorTest() {
-		try {
-			apierrorWrapper.postServiceRequest(new POSTServiceRequestData(
-					"001", 0, null));
-		} catch (APIWrapperException e) {
-			GlobalTests.errorTest(e.getGeoReportError());
-		}
-	}
+    @Test
+    public void apiErrorTest() {
+        try {
+            apierrorWrapper.postServiceRequest(new POSTServiceRequestData(
+                    "001", 0, null));
+        } catch (APIWrapperException e) {
+            GlobalTests.errorTest(e.getGeoReportError());
+        }
+    }
 
-	@Test
-	public void serviceServiceDefinitionRelationship()
-			throws APIWrapperException, IOException, ClassNotFoundException {
-		List<Service> services = wrapper.getServiceList();
-		Service randomService = services.get(0);
-		assertNotNull(randomService.getServiceDefinition());
-	}
+    @Test
+    public void serviceServiceDefinitionRelationship()
+            throws APIWrapperException, IOException, ClassNotFoundException {
+        List<Service> services = wrapper.getServiceList();
+        Service randomService = services.get(0);
+        assertNotNull(randomService.getServiceDefinition());
+    }
 
-	@Test(expected = APIWrapperException.class)
-	public void serviceServiceDefinitionRelationshipWithoutWrapper()
-			throws APIWrapperException {
-		Service service = new Service("code", "name", "description", false,
-				Type.BATCH, null, "group");
-		service.getServiceDefinition();
-	}
+    @Test(expected = APIWrapperException.class)
+    public void serviceServiceDefinitionRelationshipWithoutWrapper()
+            throws APIWrapperException {
+        Service service = new Service("code", "name", "description", false,
+                Type.BATCH, null, "group");
+        service.getServiceDefinition();
+    }
 
 }

@@ -3,6 +3,8 @@ package org.codeforamerica.open311.facade.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.codeforamerica.open311.facade.EndpointType;
+import org.codeforamerica.open311.internals.parsing.DataParser;
 
 /**
  * Contains information regarding to a city (endpoints, allowed formats...).
@@ -21,10 +24,14 @@ public class ServiceDiscoveryInfo implements Serializable, Parcelable {
 
 	private static final long serialVersionUID = 5804902138488110319L;
 	private final static String GEO_REPORT_V2_SPECIFICATION_URL = "http://wiki.open311.org/GeoReport_v2";
+	@SerializedName(DataParser.CHANGESET_TAG)
 	private Date changeset;
+	@SerializedName(DataParser.CONTACT_TAG)
 	private String contact;
+	@SerializedName(DataParser.KEY_SERVICE_TAG)
 	private String keyService;
-	List<Endpoint> endpoints;
+	@SerializedName(DataParser.ENDPOINTS_TAG)
+	private List<Endpoint> endpoints;
 
 	public ServiceDiscoveryInfo(Date changeset, String contact,
 			String keyService, List<Endpoint> endpoints) {
@@ -63,7 +70,7 @@ public class ServiceDiscoveryInfo implements Serializable, Parcelable {
 	public Endpoint getMoreSuitableEndpoint(EndpointType endpointType) {
 		List<Endpoint> typeFilteredEndpoints = new LinkedList<Endpoint>();
 		for (Endpoint endpoint : endpoints) {
-			if (endpoint.getType() == endpointType) {
+			if (endpoint.getType().equals(endpointType)) {
 				typeFilteredEndpoints.add(endpoint);
 			}
 		}
