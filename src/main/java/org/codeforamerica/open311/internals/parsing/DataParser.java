@@ -90,6 +90,7 @@ public interface DataParser {
     String GOVDOMAIN_TAG = "gov_domain";
     String CITY_TAG = "city";
     String ID_TAG = "id";
+	String APIKEY_TAG = "api_key";
 
 	/**
 	 * Parses the response to the GET service list operation.

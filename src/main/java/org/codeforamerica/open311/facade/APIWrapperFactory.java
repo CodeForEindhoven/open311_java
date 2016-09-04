@@ -380,15 +380,6 @@ public class APIWrapperFactory {
                         networkManager, cache, jurisdictionId, apiKey);
             }
         }
-        if (endpointUrl.contains("seeclickfix") && format == Format.JSON) {
-            logManager
-                    .logInfo(
-                            this,
-                            "The selected endpoint's JSON responses are not compatible with the standard, selecting the XML format.");
-            format = Format.XML;
-            networkManager.setFormat(format);
-        }
-
         return new APIWrapper(endpointUrl, format, endpointType,
                 networkManager, cache, jurisdictionId, apiKey);
 

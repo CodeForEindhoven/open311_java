@@ -42,6 +42,7 @@ public class APIWrapperFactoryTest {
         // TODO GetDiscovery test for all Cities
 
         for (City d : City.values()) {
+        //City d = City.HILLSBOROUGH;
             try {
                 APIWrapper wrapper = new APIWrapperFactory(d,
                         EndpointType.PRODUCTION).setNetworkManager(new HTTPNetworkManager())
@@ -51,7 +52,7 @@ public class APIWrapperFactoryTest {
                 System.out.println("Processing City: " + d);
                 assertNotNull(wrapper.getEndpointUrl());
             } catch (Exception e) {
-                System.out.println("Skipped " + d + ", error: " + e.getMessage());
+                System.out.println("Skipped " + d + ", " + e.getClass().getSimpleName() + ": " + e.getMessage());
             }
         }
     }

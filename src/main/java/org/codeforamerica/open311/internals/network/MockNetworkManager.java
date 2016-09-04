@@ -264,11 +264,7 @@ public class MockNetworkManager implements NetworkManager {
                 "DMV66",
                 attributes
         );
-        //return gson.toJson(serviceDefinition);
-        // TODO fix this!
-        return "{\"service_code\":\"DMV66\",\"attributes\":[{\"variable\":true,\"code\":\"WHISHETN\",\"datatype\":\"singlevaluelist\","
-                + "\"required\":true,\"datatype_description\":null,\"order\":1,\"description\":\"What is the ticket/tag/DL number?\","
-                + "\"values\":[{\"key\":123,\"name\":\"Ford\"},{\"key\":124,\"name\":\"Chrysler\"}]}]}";
+        return gson.toJson(serviceDefinition);
     }
 
     /**
@@ -446,8 +442,7 @@ public class MockNetworkManager implements NetworkManager {
      * @return XML.
      */
     public String discoveryXML() {
-        return "<?xml version=\"1.0\" encoding=\"utf-8\"?><discovery xmlns:m=\"http://org/sfgov/sf311v2/services\" "
-                + "xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+        return "<?xml version=\"1.0\" encoding=\"utf-8\"?><discovery>"
                 + "<changeset>2011-04-05T17:48:34Z</changeset><contact>Please email "
                 + "( content.311@sfgov.org )  or call ( 415-701-2311 ) for assistance "
                 + "or to report bugs</contact><key_service>To get an API_KEY please "

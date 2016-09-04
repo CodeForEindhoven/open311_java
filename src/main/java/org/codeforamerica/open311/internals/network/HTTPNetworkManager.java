@@ -14,6 +14,7 @@ import okhttp3.Response;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.UnknownServiceException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -38,8 +39,6 @@ public class HTTPNetworkManager implements NetworkManager {
     private Format format;
     private Bitmap bitmap;
     private static final String FILENAME = "media.jpg";
-    private static final String ACCEPT_HEADER = "Accept";
-    //private static final String CONTENT_TYPE_HEADER = "Content-Type";
 
     public X509TrustManager provideX509TrustManager() {
         try {
@@ -96,8 +95,9 @@ public class HTTPNetworkManager implements NetworkManager {
             return response.body().string();
         } else {
             // TODO Get format from response
-            setFormatFromResponse(response);
-            return response.message();
+            throw new IOException(
+                    "Invalid response - " + response.message()
+            );
         }
     }
 
@@ -106,30 +106,27 @@ public class HTTPNetworkManager implements NetworkManager {
         if (this.bitmap != null) {
             return doPost(url, parameters, bitmap);
         }
-        try {
-            FormBody.Builder formBuilder = new FormBody.Builder();
-            for (Entry<String, String> param : parameters.entrySet()) {
-                formBuilder.add(param.getKey(), param.getValue());
-            }
-            RequestBody body = formBuilder.build();
-            Request request = new Request.Builder()
-                    .url(url)
-                    .post(body)
-                    .build();
-            Response response;
-
-            response = okhttpClient.newCall(request).execute();
-            if (response.isSuccessful()) {
-                setFormatFromResponse(response);
-                return response.body().string();
-            } else {
-                setFormatFromResponse(response);
-                return response.message();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        FormBody.Builder formBuilder = new FormBody.Builder();
+        for (Entry<String, String> param : parameters.entrySet()) {
+            formBuilder.add(param.getKey(), param.getValue());
         }
+        RequestBody body = formBuilder.build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+        Response response;
+
+        response = okhttpClient.newCall(request).execute();
+        if (response.isSuccessful()) {
+            setFormatFromResponse(response);
+            return response.body().string();
+        } else {
+            throw new IOException(
+                    "Invalid response - " + response.message()
+            );
+        }
+
     }
 
     public String doPost(HttpUrl url, Map<String, String> parameters, Bitmap bitmap) throws IOException {
@@ -164,7 +161,9 @@ public class HTTPNetworkManager implements NetworkManager {
         if (response.isSuccessful()) {
             return response.body().string();
         } else {
-            return response.message();
+            throw new IOException(
+                    "Invalid response - " + response.message()
+            );
         }
 
     }
@@ -174,19 +173,22 @@ public class HTTPNetworkManager implements NetworkManager {
         this.format = format;
     }
 
-    public Format getFormat(){
+    public Format getFormat() {
         return this.format;
     }
 
-    private void setFormatFromResponse(Response response){
-        if(response.body().contentType().subtype().equals("xml")){
+    private void setFormatFromResponse(Response response) throws UnknownServiceException {
+        if (response.body().contentType().subtype().equals("xml")) {
             this.format = Format.XML;
-        }
-        else if(response.body().contentType().subtype().equals("json")){
+        } else if (response.body().contentType().subtype().equals("json")) {
+            this.format = Format.JSON;
+        } else if (response.body().contentType().subtype().equals("plain")) {
+            //TORONTO fix
             this.format = Format.JSON;
         } else {
-            //Default format
-            this.format = Format.XML;
+            throw new UnknownServiceException(
+                    "Invalid response type - " + response.body().contentType().subtype()
+            );
         }
     }
 }

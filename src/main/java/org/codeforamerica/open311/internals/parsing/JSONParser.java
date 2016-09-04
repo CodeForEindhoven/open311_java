@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
@@ -18,6 +19,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.codeforamerica.open311.facade.Format;
+import org.codeforamerica.open311.facade.data.Endpoint;
 import org.codeforamerica.open311.facade.data.POSTServiceRequestResponse;
 import org.codeforamerica.open311.facade.data.Service;
 import org.codeforamerica.open311.facade.data.ServiceDefinition;
@@ -26,6 +29,7 @@ import org.codeforamerica.open311.facade.data.ServiceRequest;
 import org.codeforamerica.open311.facade.data.ServiceRequestIdResponse;
 import org.codeforamerica.open311.facade.exceptions.DataParsingException;
 import org.codeforamerica.open311.facade.exceptions.GeoReportV2Error;
+import org.json.JSONArray;
 
 /**
  * Implementation of a {@link DataParser} which takes JSON data as input.
@@ -152,15 +156,14 @@ public class JSONParser extends AbstractParser {
         try {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(Date.class, new DateDeserializer())
-                    //.setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
                     .create();
-            // TODO Somehow, it cannot parse the date for Baltimore!
             result = gson.fromJson(rawData, ServiceDiscoveryInfo.class);
             return result;
         } catch (Exception e) {
             throw new DataParsingException(e.getMessage());
         }
     }
+
     private class DateDeserializer implements JsonDeserializer<Date> {
 
         @Override

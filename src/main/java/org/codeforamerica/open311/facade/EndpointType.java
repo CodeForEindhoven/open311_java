@@ -27,6 +27,9 @@ public enum EndpointType {
      */
     public static EndpointType getFromString(String type) {
         type = type.toLowerCase();
+        if (type.equals("prod")) {
+            return PRODUCTION;
+        }
         if (type.equals("production")) {
             return PRODUCTION;
         }

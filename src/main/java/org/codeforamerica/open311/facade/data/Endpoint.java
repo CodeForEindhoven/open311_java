@@ -21,6 +21,8 @@ import org.codeforamerica.open311.internals.parsing.DataParser;
  */
 public class Endpoint implements Serializable, Parcelable {
     private static final long serialVersionUID = -5512681512770606630L;
+
+
     @SerializedName(DataParser.SPECIFICATION_TAG)
     private String specificationUrl;
     @SerializedName(DataParser.URL_TAG)
@@ -29,6 +31,7 @@ public class Endpoint implements Serializable, Parcelable {
     private Date changeset;
     @SerializedName(DataParser.TYPE_TAG)
     private String endpointType;
+
     @SerializedName(DataParser.FORMATS_TAG)
     private List<Format> formats;
 
@@ -43,7 +46,16 @@ public class Endpoint implements Serializable, Parcelable {
     }
 
     public String getSpecificationUrl() {
-        return specificationUrl;
+        // SeeClickFix fix
+        if (specificationUrl.endsWith("/")) {
+            return specificationUrl.substring(0, specificationUrl.length() - 1);
+        } else {
+            return specificationUrl;
+        }
+    }
+
+    public void setSpecificationUrl(String specificationUrl) {
+        this.specificationUrl = specificationUrl;
     }
 
     public String getUrl() {

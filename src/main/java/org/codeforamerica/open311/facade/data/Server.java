@@ -32,6 +32,18 @@ public class Server {
     private Boolean productionReady;
     @SerializedName(DataParser.GOVDOMAIN_TAG)
     private Boolean govDomain;
+    @SerializedName(DataParser.APIKEY_TAG)
+    private String apiKey;
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+
 
     public String getName() {
         return name;

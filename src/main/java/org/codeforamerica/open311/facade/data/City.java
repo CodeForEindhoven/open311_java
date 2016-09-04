@@ -16,7 +16,7 @@ public enum City {
     BONN("Bonn, Deutschland"),
     ROSTOCK("Rostock, Deutschland"),
     HELSINKI("Helsinki, Suomi"),
-    LAMIA("Lamía, Elláda"),
+    //LAMIA("Lamía, Elláda"),
     BALTIMORE("Baltimore, MD"),
     BLOOMINGTON("Bloomington, IN"),
     BOSTON("Boston, MA"),
@@ -79,6 +79,25 @@ public enum City {
 
     public String getJurisdictionId() {
         return this.mock.getJurisdictionId();
+    }
+
+    public String getBaseURL() {
+        return this.mock.getBaseURL();
+    }
+
+    public String getApiKey() {
+        return this.mock.getApiKey();
+    }
+
+    public static City fromString(String text) {
+        if (text != null) {
+            for (City b : City.values()) {
+                if (text.equalsIgnoreCase(b.getCityName())) {
+                    return b;
+                }
+            }
+        }
+        return null;
     }
 }
 

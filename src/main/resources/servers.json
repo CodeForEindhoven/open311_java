@@ -46,7 +46,7 @@
     "api_issue_tracker": "https://github.com/open311/open311.github.io/issues?q=is%3Aopen+is%3Aissue+label%3Azurich",
     "api_key_request": "",
     "jurisdiction_id": "zurich",
-    "api_discovery": "https://www.zueriwieneu.ch/open311/v2/discovery.json",
+    "api_discovery": "https://www.zueriwieneu.ch/open311/v2/discovery.xml",
     "version": "georeport-v2",
     "base_url": "https://www.zueriwieneu.ch/open311/v2/",
     "test_url": "",
@@ -60,7 +60,7 @@
     "api_issue_tracker": "https://github.com/open311/open311.github.io/issues?q=is%3Aopen+is%3Aissue+label%3Agiessen.de",
     "api_key_request": "",
     "jurisdiction_id": "",
-    "api_discovery": "http://maengelmelder.giessen.de/georeport/v2/discovery.json",
+    "api_discovery": "http://maengelmelder.giessen.de/georeport/v2/discovery.xml",
     "version": "georeport-v2",
     "base_url": "http://maengelmelder.giessen.de/georeport/v2/",
     "test_url": "",
@@ -144,7 +144,7 @@
     "api_issue_tracker": "https://github.com/open311/open311.github.io/issues?q=is%3Aopen+is%3Aissue+label%3Acm-lisboa.pt",
     "api_key_request": "",
     "jurisdiction_id": "",
-    "api_discovery": "http://web4.cm-lisboa.pt/citySDK/discovery/discovery.json",
+    "api_discovery": "http://web4.cm-lisboa.pt/citySDK/discovery/discovery.xml",
     "version": "georeport-v2",
     "base_url": "https://open311.cm-lisboa.pt/GeoReport/v1/",
     "test_url": "http://web4.cm-lisboa.pt/citySDK/v1/",
@@ -308,7 +308,8 @@
   {
     "name" : "Eindhoven, NL",
     "country": "NLD",
-    "api_discovery" : "https://www.open311.io/api/v2/discovery.json"
+    "api_discovery" : "https://www.open311.io/api/v2/discovery.json",
+    "api_key": "56b074c9495b1"
   },
   {
     "name" : "City of Alpharetta, GA",
@@ -317,12 +318,12 @@
   },
   {
     "name" : "Bainbridge Island, WA",
-    "api_discovery" : "http://seeclickfix.com/bainbridge-island/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/38/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "City of Corona, CA",
-    "api_discovery" : "http://seeclickfix.com/corona/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/70/discovery.json",
     "jurisdiction_id" : ""
   },
   {
@@ -332,27 +333,27 @@
   },
   {
     "name" : "City of Dunwoody, GA",
-    "api_discovery" : "http://seeclickfix.com/dunwoody_ga/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/112/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "City of Huntsville, AL",
-    "api_discovery" : "http://seeclickfix.com/huntsville/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/145/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "City of Newberg, OR",
-    "api_discovery" : "http://seeclickfix.com/newberg/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/122/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "City of New Haven, CT",
-    "api_discovery" : "http://seeclickfix.com/new-haven/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/29/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "City of Richmond",
-    "api_discovery" : "http://seeclickfix.com/richmond/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/102/discovery.json",
     "jurisdiction_id" : ""
   },
   {
@@ -367,52 +368,52 @@
   },
   {
     "name" : "Darwin, Australia",
-    "api_discovery" : "http://seeclickfix.com/aus_darwin/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/111/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "Fontana City Hall",
-    "api_discovery" : "http://seeclickfix.com/fontana/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/159/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "Howard County Department of Public Works, MD",
-    "api_discovery" : "http://seeclickfix.com/md_howard-county/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/520/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "Manor, TX",
-    "api_discovery" : "http://seeclickfix.com/manor/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/33/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "Newark, OH",
-    "api_discovery" : "http://seeclickfix.com/newark_2/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/809/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "Newnan, GA",
-    "api_discovery" : "http://seeclickfix.com/newnan/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/161/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "Olathe, KS",
-    "api_discovery" : "http://seeclickfix.com/olathe/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/106/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "Raleigh City Hall, NC",
-    "api_discovery" : "http://seeclickfix.com/raleigh/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/149/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "Roosevelt Island, NY",
-    "api_discovery" : "http://seeclickfix.com/roosevelt-island/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/115/discovery.json",
     "jurisdiction_id" : ""
   },
   {
     "name" : "Town of Hillsborough, CA",
-    "api_discovery" : "http://seeclickfix.com/hillsborough/open311/discovery.xml",
+    "api_discovery" : "https://seeclickfix.com/open311/v2/45/discovery.json",
     "jurisdiction_id" : ""
   }
 ]
