@@ -5,22 +5,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-import org.codeforamerica.open311.facade.Format;
-import org.codeforamerica.open311.facade.data.Endpoint;
 import org.codeforamerica.open311.facade.data.POSTServiceRequestResponse;
 import org.codeforamerica.open311.facade.data.Service;
 import org.codeforamerica.open311.facade.data.ServiceDefinition;
@@ -29,7 +21,6 @@ import org.codeforamerica.open311.facade.data.ServiceRequest;
 import org.codeforamerica.open311.facade.data.ServiceRequestIdResponse;
 import org.codeforamerica.open311.facade.exceptions.DataParsingException;
 import org.codeforamerica.open311.facade.exceptions.GeoReportV2Error;
-import org.json.JSONArray;
 
 /**
  * Implementation of a {@link DataParser} which takes JSON data as input.

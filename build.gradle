@@ -10,7 +10,6 @@ dependencies {
     compile group: 'com.google.android', name: 'android', version: '2.1.2'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.5'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.5'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.5'
     testCompile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     sourceCompatibility = JavaVersion.VERSION_1_6
