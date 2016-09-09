@@ -19,6 +19,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -86,6 +87,7 @@ public class HTTPNetworkManager implements NetworkManager {
     @Override
     public String doGet(HttpUrl url) throws IOException {
         Request request = new Request.Builder()
+                .addHeader("Accept-Language", Locale.getDefault().toString())
                 .url(url)
                 .build();
         Response response = okhttpClient.newCall(request).execute();
@@ -101,6 +103,7 @@ public class HTTPNetworkManager implements NetworkManager {
         }
     }
 
+
     @Override
     public String doPost(HttpUrl url, Map<String, String> parameters) throws IOException {
         if (this.bitmap != null) {
@@ -112,6 +115,7 @@ public class HTTPNetworkManager implements NetworkManager {
         }
         RequestBody body = formBuilder.build();
         Request request = new Request.Builder()
+                .addHeader("Accept-Language", Locale.getDefault().toString())
                 .url(url)
                 .post(body)
                 .build();
@@ -154,6 +158,7 @@ public class HTTPNetworkManager implements NetworkManager {
 
         // Create the Request
         Request request = new Request.Builder()
+                .addHeader("Accept-Language", Locale.getDefault().toString())
                 .url(url)
                 .post(requestBody)
                 .build();
