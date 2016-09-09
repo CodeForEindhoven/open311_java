@@ -39,6 +39,7 @@ public class HTTPNetworkManager implements NetworkManager {
     private OkHttpClient okhttpClient;
     private Format format;
     private Bitmap bitmap;
+    private String acceptLanguage;
     private static final String FILENAME = "media.jpg";
 
     public X509TrustManager provideX509TrustManager() {
@@ -76,18 +77,23 @@ public class HTTPNetworkManager implements NetworkManager {
 
     public HTTPNetworkManager() {
         this.okhttpClient = getHttpClient();
+        Locale locale = Locale.getDefault();
+        this.acceptLanguage = locale.getLanguage() + "-" + locale.getCountry() + ", " + locale.getLanguage() + ";q=0.7, *;q=0.5";
+
     }
 
     public HTTPNetworkManager(Bitmap bitmap) {
         this.bitmap = bitmap;
         this.okhttpClient = getHttpClient();
+        Locale locale = Locale.getDefault();
+        this.acceptLanguage = locale.getLanguage() + "-" + locale.getCountry() + ", " + locale.getLanguage() + ";q=0.7, *;q=0.5";
 
     }
 
     @Override
     public String doGet(HttpUrl url) throws IOException {
         Request request = new Request.Builder()
-                .addHeader("Accept-Language", Locale.getDefault().toString())
+                .addHeader("Accept-Language", acceptLanguage)
                 .url(url)
                 .build();
         Response response = okhttpClient.newCall(request).execute();
@@ -115,7 +121,7 @@ public class HTTPNetworkManager implements NetworkManager {
         }
         RequestBody body = formBuilder.build();
         Request request = new Request.Builder()
-                .addHeader("Accept-Language", Locale.getDefault().toString())
+                .addHeader("Accept-Language", acceptLanguage)
                 .url(url)
                 .post(body)
                 .build();
@@ -158,7 +164,7 @@ public class HTTPNetworkManager implements NetworkManager {
 
         // Create the Request
         Request request = new Request.Builder()
-                .addHeader("Accept-Language", Locale.getDefault().toString())
+                .addHeader("Accept-Language", acceptLanguage)
                 .url(url)
                 .post(requestBody)
                 .build();
