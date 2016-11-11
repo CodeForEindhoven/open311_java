@@ -91,6 +91,13 @@ public interface DataParser {
     String CITY_TAG = "city";
     String ID_TAG = "id";
 	String APIKEY_TAG = "api_key";
+    String UPLOAD_TAG = "upload";
+	String UPLOAD_URL_TAG = "url";
+    String UPLOAD_PROTOCOL_TAG = "protocol";
+    String MAP_TAG = "map";
+    String MAP_LAT_TAG = "lat";
+    String MAP_LON_TAG = "lon";
+    String MAP_ZOOM_TAG = "zoom";
 
 	/**
 	 * Parses the response to the GET service list operation.

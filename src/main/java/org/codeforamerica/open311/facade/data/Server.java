@@ -34,6 +34,10 @@ public class Server {
     private Boolean govDomain;
     @SerializedName(DataParser.APIKEY_TAG)
     private String apiKey;
+    @SerializedName(DataParser.UPLOAD_TAG)
+    private Upload upload;
+    @SerializedName(DataParser.MAP_TAG)
+    private Map map;
 
     public String getApiKey() {
         return apiKey;
@@ -43,8 +47,6 @@ public class Server {
         this.apiKey = apiKey;
     }
 
-
-
     public String getName() {
         return name;
     }
@@ -52,6 +54,14 @@ public class Server {
     public Server setName(String name) {
         this.name = name;
         return this;
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public Upload getUpload() {
+        return upload;
     }
 
     public String getCountry() {

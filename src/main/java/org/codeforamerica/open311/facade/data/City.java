@@ -69,6 +69,14 @@ public enum City {
         this.mock = servers.getServer(this.cityName);
     }
 
+    public Upload getUpload() {
+        return this.mock.getUpload();
+    }
+
+    public Map getMap(){
+        return this.mock.getMap();
+    }
+
     public String getCityName() {
         return cityName;
     }
