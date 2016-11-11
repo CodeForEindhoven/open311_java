@@ -15,3 +15,16 @@ dependencies {
     sourceCompatibility = JavaVersion.VERSION_1_6
     targetCompatibility = JavaVersion.VERSION_1_6
 }
+test {
+    testLogging {
+        exceptionFormat "short"
+        showCauses false
+        showExceptions false
+        showStandardStreams false
+        showStackTraces false
+        events "failed", "standardOut", "standardError"
+
+    }
+}
+
+
