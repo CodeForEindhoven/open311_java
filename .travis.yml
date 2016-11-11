@@ -6,4 +6,4 @@ branches:
     - master
 
 jdk:
-  - openjdk6
+  - openjdk7
