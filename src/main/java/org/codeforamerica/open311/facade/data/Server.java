@@ -10,6 +10,8 @@ import org.codeforamerica.open311.internals.parsing.DataParser;
 public class Server {
     @SerializedName(DataParser.NAME_TAG)
     private String name;
+    @SerializedName(DataParser.TITLE_TAG)
+    private String title;
     @SerializedName(DataParser.COUNTRY_TAG)
     private String country;
     @SerializedName(DataParser.DOCUMENTATION_TAG)
@@ -170,6 +172,14 @@ public class Server {
 
     public String getCityName() {
         return this.name;
+    }
+
+    public String getTitle() {
+        if(this.title != null) {
+            return this.title;
+        } else {
+            return this.name;
+        }
     }
 
     /**

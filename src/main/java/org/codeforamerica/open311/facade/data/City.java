@@ -81,6 +81,10 @@ public enum City {
         return cityName;
     }
 
+    public String getTitle(){
+        return this.mock.getTitle();
+    }
+
     public String getDiscoveryUrl() {
         return this.mock.getDiscoveryUrl();
     }

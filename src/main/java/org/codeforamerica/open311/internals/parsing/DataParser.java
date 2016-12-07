@@ -18,6 +18,7 @@ import org.codeforamerica.open311.facade.exceptions.GeoReportV2Error;
  * 
  */
 public interface DataParser {
+	String TITLE_TAG = "title";
 	String TEXT_FORMAT = "utf-8";
 	String SERVICE_TAG = "service";
 	String SERVICE_CODE_TAG = "service_code";

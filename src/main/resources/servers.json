@@ -308,6 +308,7 @@
   },
   {
     "name": "Eindhoven, NL",
+    "title": "Eindhoven",
     "country": "NLD",
     "api_discovery": "https://www.open311.io/api/v2/discovery.json",
     "api_key": "56b074c9495b1",
