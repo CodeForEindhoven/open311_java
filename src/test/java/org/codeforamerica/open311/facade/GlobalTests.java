@@ -38,11 +38,8 @@ public class GlobalTests {
         assertTrue(service1.hasMetadata());
         assertEquals(service1.getType(), Service.Type.REALTIME);
         assertEquals(service1.getGroup(), "sanitation");
-        String[] keywordList = service1.getKeywords();
-        assertEquals(keywordList.length, 3);
-        assertEquals("lorem", keywordList[0]);
-        assertEquals("ipsum", keywordList[1]);
-        assertEquals("dolor", keywordList[2]);
+        String keywordList = service1.getKeywords();
+        assertEquals("lorem, ipsum, dolor", keywordList);
     }
 
     public static void serviceDefinitionTest(ServiceDefinition serviceDefinition) {
@@ -64,7 +61,7 @@ public class GlobalTests {
         assertEquals("638344", id.getServiceRequestId());
     }
 
-    public static void serviceRequestTest(ServiceRequest sr1)
+    static void serviceRequestTest(ServiceRequest sr1)
             throws MalformedURLException {
         assertEquals(sr1.getServiceRequestId(), "638344");
         assertEquals(sr1.getStatus(), Status.CLOSED);

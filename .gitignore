@@ -22,3 +22,7 @@ build/
 cache.prop
 
 # Auto-generated source files
+gradlew
+gradlew.bat
+gradle/
+local.properties
