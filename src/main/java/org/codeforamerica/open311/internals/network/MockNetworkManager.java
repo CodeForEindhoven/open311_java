@@ -211,7 +211,7 @@ public class MockNetworkManager implements NetworkManager {
                 "Garbage or recycling cans that have been left out for more than 24 hours after collection. Violators will be cited.",
                 true,
                 Service.Type.getFromString("realtime"),
-                new String[]{"lorem", "ipsum", "dolor"},
+                "lorem, ipsum, dolor",
                 "sanitation");
         services[1] = new Service(
                 "002",
@@ -219,7 +219,7 @@ public class MockNetworkManager implements NetworkManager {
                 "Metal construction plate covering the street or sidewalk has been moved.",
                 true,
                 Service.Type.getFromString("realtime"),
-                new String[]{"lorem", "ipsum", "dolor"},
+                "lorem, ipsum, dolor",
                 "street");
         return gson.toJson(services);
     }

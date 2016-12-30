@@ -29,12 +29,12 @@ public class Service implements Serializable, Parcelable {
     @SerializedName(DataParser.TYPE_TAG)
     private Type type;
     @SerializedName(DataParser.KEYWORDS_TAG)
-    private String[] keywords;
+    private String keywords;
     @SerializedName(DataParser.SERVICE_GROUP_TAG)
     private String group;
 
     public Service(String serviceCode, String serviceName, String description,
-                   Boolean metadata, Type type, String[] keywords, String group) {
+                   Boolean metadata, Type type, String keywords, String group) {
         super();
         this.serviceCode = serviceCode;
         this.serviceName = serviceName;
@@ -65,7 +65,7 @@ public class Service implements Serializable, Parcelable {
         return type;
     }
 
-    public String[] getKeywords() {
+    public String getKeywords() {
         return keywords;
     }
 
@@ -134,7 +134,7 @@ public class Service implements Serializable, Parcelable {
         dest.writeString(this.description);
         dest.writeValue(this.metadata);
         dest.writeInt(this.type == null ? -1 : this.type.ordinal());
-        dest.writeStringArray(this.keywords);
+        dest.writeString(this.keywords);
         dest.writeString(this.group);
     }
 
@@ -145,7 +145,7 @@ public class Service implements Serializable, Parcelable {
         this.metadata = (Boolean) in.readValue(Boolean.class.getClassLoader());
         int tmpType = in.readInt();
         this.type = tmpType == -1 ? null : Type.values()[tmpType];
-        this.keywords = in.createStringArray();
+        this.keywords = in.readString();
         this.group = in.readString();
     }
 

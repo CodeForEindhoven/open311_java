@@ -94,8 +94,7 @@ public class XMLParser extends AbstractParser {
         Boolean metadata = parseBoolean(getTagContent(serviceElement,
                 METADATA_TAG));
         String group = getTagContent(serviceElement, SERVICE_GROUP_TAG);
-        String[] keywords = getKeywords(getTagContent(serviceElement,
-                KEYWORDS_TAG));
+        String keywords = getTagContent(serviceElement, KEYWORDS_TAG);
         Service.Type type = Service.Type.getFromString(getTagContent(
                 serviceElement, TYPE_TAG));
         return new Service(code, name, description, metadata, type, keywords,
