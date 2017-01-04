@@ -98,11 +98,9 @@ public class HTTPNetworkManager implements NetworkManager {
                 .build();
         Response response = okhttpClient.newCall(request).execute();
         if (response.isSuccessful()) {
-            // TODO Get format from response
             setFormatFromResponse(response);
             return response.body().string();
         } else {
-            // TODO Get format from response
             throw new IOException(
                     "Invalid response - " + response.message()
             );
@@ -154,7 +152,6 @@ public class HTTPNetworkManager implements NetworkManager {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream);
         byte[] binaryData = stream.toByteArray();
 
-        // todo add the image to the body
         //entity.addBinaryBody("media", binaryData, contentType, FILENAME);
         builder.addFormDataPart("media", FILENAME, RequestBody.create(MediaType.parse("image/jpeg"), binaryData));
 

@@ -96,6 +96,7 @@ public class JSONParser extends AbstractParser {
             result = gson.fromJson(rawData, listType);
             return result;
         } catch (Exception e) {
+            //Toronto, wraps the service_requests array in a json object..
             throw new DataParsingException(e.getMessage());
         }
     }
@@ -161,8 +162,7 @@ public class JSONParser extends AbstractParser {
         public Date deserialize(JsonElement jsonElement, Type typeOF,
                                 JsonDeserializationContext context) throws JsonParseException {
             DateParser dateParser = new DateParser();
-            Date result = dateParser.parseDate(jsonElement.getAsString());
-            return result;
+            return dateParser.parseDate(jsonElement.getAsString());
         }
     }
 }

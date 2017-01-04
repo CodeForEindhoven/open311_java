@@ -4,6 +4,8 @@ import okhttp3.HttpUrl;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.codeforamerica.open311.facade.data.City;
 import org.codeforamerica.open311.facade.data.Endpoint;
@@ -260,6 +262,7 @@ public class APIWrapperFactory {
         try {
             logManager.logInfo(this, "Getting the service discovery.");
             DataParser dataParser;
+            Endpoint endpoint = null;
             ServiceDiscoveryInfo serviceDiscoveryInfo;
             serviceDiscoveryInfo = cache
                     .retrieveCachedServiceDiscoveryInfo(city);
@@ -267,18 +270,32 @@ public class APIWrapperFactory {
                 logManager
                         .logInfo(this,
                                 "Service discovery is not cached, downloading it.");
-                HttpUrl discoveryUrl = HttpUrl.parse(city.getDiscoveryUrl());
+                String mDiscovery = city.getDiscoveryUrl();
+                if (mDiscovery != null && mDiscovery.length() > 0) {
+                    HttpUrl discoveryUrl = HttpUrl.parse(city.getDiscoveryUrl());
 
-                guessFormat(discoveryUrl);
+                    guessFormat(discoveryUrl);
 
-                dataParser = DataParserFactory.getInstance()
-                        .buildDataParser(format);
-                serviceDiscoveryInfo = dataParser
-                        .parseServiceDiscovery(networkManager.doGet(discoveryUrl));
-                cache.saveServiceDiscovery(city, serviceDiscoveryInfo);
+                    dataParser = DataParserFactory.getInstance()
+                            .buildDataParser(format);
+                    serviceDiscoveryInfo = dataParser
+                            .parseServiceDiscovery(networkManager.doGet(discoveryUrl));
+                    cache.saveServiceDiscovery(city, serviceDiscoveryInfo);
+                    endpoint = serviceDiscoveryInfo
+                            .getMoreSuitableEndpoint(endpointType);
+                } else {
+                    //todo find the endpoint without servicediscoveryInfo
+                    List<Format> formats = Arrays.asList(Format.JSON);
+                    endpoint = new Endpoint(
+                            "http://wiki.open311.org/GeoReport_v2",
+                            city.getBaseURL(),
+                            null,
+                            endpointType.toString(),
+                            formats
+                    );
+                }
             }
-            Endpoint endpoint = serviceDiscoveryInfo
-                    .getMoreSuitableEndpoint(endpointType);
+
             if (endpoint == null) {
                 logManager.logError(this, "No suitable endpoint was found.");
                 throw new APIWrapperException(
@@ -339,9 +356,10 @@ public class APIWrapperFactory {
 
     /**
      * Guess the format from the url object
+     *
      * @param httpUrl url to be tested
      */
-    private void guessFormat(HttpUrl httpUrl){
+    private void guessFormat(HttpUrl httpUrl) {
         if (format == null) {
 
             String path = httpUrl.url().getPath();

@@ -39,10 +39,8 @@ public class APIWrapperFactoryTest {
 
     @Test
     public void getHTTPNetworkDiscovery() throws APIWrapperException, ClassNotFoundException {
-        // TODO GetDiscovery test for all Cities
 
         for (City d : City.values()) {
-        //City d = City.HILLSBOROUGH;
             try {
                 APIWrapper wrapper = new APIWrapperFactory(d,
                         EndpointType.PRODUCTION).setNetworkManager(new HTTPNetworkManager())

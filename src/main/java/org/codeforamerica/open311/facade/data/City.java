@@ -56,7 +56,8 @@ public enum City {
     OLATHE("Olathe, KS"),
     RALEIGH("Raleigh City Hall, NC"),
     ROOSEVELT("Roosevelt Island, NY"),
-    HILLSBOROUGH("Town of Hillsborough, CA");
+    HILLSBOROUGH("Town of Hillsborough, CA"),
+    LAMIA("Lamía, Elláda");
 
     @SerializedName(DataParser.CITY_TAG)
     private String cityName;
