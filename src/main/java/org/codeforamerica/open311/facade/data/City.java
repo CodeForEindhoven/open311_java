@@ -32,7 +32,7 @@ public enum City {
     //Endpoints in Development
     QUEBEC("Quebec, QC"),
     SURREY("Surrey, BC"),
-    ZURICH("Zürich, Schweiz"),
+    //ZURICH("Zürich, Schweiz"), TODO Broken!
     ZARAGOZA("Zaragoza, España"),
     LISBOA("Lisboa, Portugal"),
     PHILADELPHIA("Philadelphia, PA"),
