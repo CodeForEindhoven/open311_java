@@ -40,9 +40,35 @@ public class Server {
     private Upload upload;
     @SerializedName(DataParser.MAP_TAG)
     private Map map;
+    @SerializedName(DataParser.DESCRIPTION_TAG)
+    private String description;
 
     public String getApiKey() {
         return apiKey;
+    }
+
+    public Server setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public Server setUpload(Upload upload) {
+        this.upload = upload;
+        return this;
+    }
+
+    public Server setMap(Map map) {
+        this.map = map;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Server setDescription(String description) {
+        this.description = description;
+        return this;
     }
 
     public void setApiKey(String apiKey) {

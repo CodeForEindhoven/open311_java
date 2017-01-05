@@ -74,7 +74,11 @@ public enum City {
         return this.mock.getUpload();
     }
 
-    public Map getMap(){
+    public String getDescription() {
+        return this.mock.getDescription();
+    }
+
+    public Map getMap() {
         return this.mock.getMap();
     }
 
@@ -82,7 +86,7 @@ public enum City {
         return cityName;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return this.mock.getTitle();
     }
 
