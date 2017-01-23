@@ -45,9 +45,11 @@ public class Servers {
     }
 
     public Server getServer(String name) {
-        for (int i = 0; i < collection.size(); i++) {
-            if (collection.get(i).getName().equals(name)) {
-                return collection.get(i);
+        if (name != null) {
+            for (Server b : collection) {
+                if (name.equalsIgnoreCase(b.getName())) {
+                    return b;
+                }
             }
         }
         return null;

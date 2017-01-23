@@ -3,6 +3,7 @@ package org.codeforamerica.open311.internals.caching;
 import java.util.List;
 
 import org.codeforamerica.open311.facade.data.City;
+import org.codeforamerica.open311.facade.data.Server;
 import org.codeforamerica.open311.facade.data.Service;
 import org.codeforamerica.open311.facade.data.ServiceDefinition;
 import org.codeforamerica.open311.facade.data.ServiceDiscoveryInfo;
@@ -32,10 +33,30 @@ public class NoCache implements Cache {
 	}
 
 	@Override
+	public void saveServiceDiscovery(Server server,
+									 ServiceDiscoveryInfo serviceDiscovery) {
+	}
+
+	/**
+	 *
+	 * @param city City of interest.
+	 * @deprecated
+	 */
+	@Override
 	public void saveServiceDiscovery(City city,
 			ServiceDiscoveryInfo serviceDiscovery) {
 	}
 
+	@Override
+	public ServiceDiscoveryInfo retrieveCachedServiceDiscoveryInfo(Server server) {
+		return null;
+	}
+
+	/**
+	 *
+	 * @param city City of interest.
+	 * @deprecated
+     */
 	@Override
 	public ServiceDiscoveryInfo retrieveCachedServiceDiscoveryInfo(City city) {
 		return null;

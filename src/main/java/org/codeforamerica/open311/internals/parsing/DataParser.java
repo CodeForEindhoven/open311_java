@@ -59,6 +59,7 @@ public interface DataParser {
 	String LATITUDE_TAG = "lat";
 	String LONGITUDE_TAG = "long";
 	String MEDIA_URL_TAG = "media_url";
+	String MEDIA_TAG = "media";
 	String ACCOUNT_ID_TAG = "account_id";
 	String ERROR_TAG = "error";
 	String DISCOVERY_TAG = "discovery";

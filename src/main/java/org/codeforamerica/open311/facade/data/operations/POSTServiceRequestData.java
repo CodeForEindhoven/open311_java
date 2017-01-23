@@ -1,5 +1,6 @@
 package org.codeforamerica.open311.facade.data.operations;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -257,6 +258,13 @@ public class POSTServiceRequestData {
 		tryToAddString(DataParser.MEDIA_URL_TAG, mediaUrl);
 		return this;
 	}
+
+    public POSTServiceRequestData setMedia(String[] media) {
+        String concat = Arrays.toString(media);
+        concat = concat.substring(1, concat.length() -1);
+        tryToAddString(DataParser.MEDIA_TAG, concat);
+        return this;
+    }
 
 	/**
 	 * Tries to add a pair (key, value) to the parameter list. Key and value has

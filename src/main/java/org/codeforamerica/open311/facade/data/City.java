@@ -9,6 +9,7 @@ import org.codeforamerica.open311.internals.parsing.DataParser;
  * List taken from http://wiki.open311.org/GeoReport_v2/Servers/
  * <p/>
  * Is checked by running the getHTTPNetworkDiscovery test. Needs to be updated periodically.
+ * @deprecated use Server instead
  */
 public enum City {
     TORONTO("Toronto, ON"),
@@ -26,8 +27,9 @@ public enum City {
     GRAND_RAPIDS("Grand Rapids, MI"),
     PEORIA("Peoria, IL"),
     SAN_FRANCISCO("San Francisco, CA"),
-    // Washington is no longer using the open311 phttp://wiki.open311.org/GeoReport_v2/Servers/rotocol.
+    // Washington is no longer using the open311 phttp://wiki.open311.org/GeoReport_v2/Servers/ protocol.
     WASHINGTON("Washington D.C."),
+    BREDA_NB_NL("Breda, NL"),
     EINDHOVEN("Eindhoven, NL"),
     //Endpoints in Development
     QUEBEC("Quebec, QC"),
@@ -82,6 +84,11 @@ public enum City {
         return this.mock.getMap();
     }
 
+    /**
+     *
+     * @return
+     * @deprecated
+     */
     public String getCityName() {
         return cityName;
     }
@@ -106,6 +113,9 @@ public enum City {
         return this.mock.getApiKey();
     }
 
+    public Server getMock() {
+        return this.mock;
+    }
     public static City fromString(String text) {
         if (text != null) {
             for (City b : City.values()) {

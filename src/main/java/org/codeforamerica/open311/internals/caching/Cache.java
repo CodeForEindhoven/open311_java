@@ -3,6 +3,7 @@ package org.codeforamerica.open311.internals.caching;
 import java.util.List;
 
 import org.codeforamerica.open311.facade.data.City;
+import org.codeforamerica.open311.facade.data.Server;
 import org.codeforamerica.open311.facade.data.Service;
 import org.codeforamerica.open311.facade.data.ServiceDefinition;
 import org.codeforamerica.open311.facade.data.ServiceDiscoveryInfo;
@@ -33,8 +34,18 @@ public interface Cache {
     /**
      * Saves a {@link ServiceDiscoveryInfo object} related to a city.
      *
+     * @param server             Server related to the requested service discovery.
+     * @param serviceDiscovery The obtained service discovery.
+     */
+    void saveServiceDiscovery(Server server,
+                              ServiceDiscoveryInfo serviceDiscovery);
+
+    /**
+     * Saves a {@link ServiceDiscoveryInfo object} related to a city.
+     *
      * @param city             City related to the requested service discovery.
      * @param serviceDiscovery The obtained service discovery.
+     * @deprecated
      */
     void saveServiceDiscovery(City city,
                               ServiceDiscoveryInfo serviceDiscovery);
@@ -42,9 +53,18 @@ public interface Cache {
     /**
      * Looks for the service discovery of a given city in the local cache.
      *
+     * @param server City of interest.
+     * @return The service discovery of the given city of <code>null</code> if
+     * it isn't cached.
+     */
+    ServiceDiscoveryInfo retrieveCachedServiceDiscoveryInfo(Server server);
+    /**
+     * Looks for the service discovery of a given city in the local cache.
+     *
      * @param city City of interest.
      * @return The service discovery of the given city of <code>null</code> if
      * it isn't cached.
+     * @deprecated
      */
     ServiceDiscoveryInfo retrieveCachedServiceDiscoveryInfo(City city);
 

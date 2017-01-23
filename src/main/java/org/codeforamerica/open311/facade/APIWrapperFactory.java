@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.codeforamerica.open311.facade.data.City;
 import org.codeforamerica.open311.facade.data.Endpoint;
+import org.codeforamerica.open311.facade.data.Server;
 import org.codeforamerica.open311.facade.data.ServiceDiscoveryInfo;
 import org.codeforamerica.open311.facade.exceptions.APIWrapperException;
 import org.codeforamerica.open311.facade.exceptions.APIWrapperException.Error;
@@ -42,8 +43,10 @@ public class APIWrapperFactory {
     /**
      * Used for the second way of building the {@link APIWrapper} (
      * {@link APIWrapperFactory#APIWrapperFactory(City, EndpointType)}).
+     * @deprecated use Server instead
      */
     private City city = null;
+    private Server server = null;
     /**
      * Used for the second way of building the {@link APIWrapper} (
      * {@link APIWrapperFactory#APIWrapperFactory(City, EndpointType)}).
@@ -122,20 +125,46 @@ public class APIWrapperFactory {
      * format will be {@link Format#XML}.
      *
      * @param city Desired city.
+     * @deprecated
      */
     public APIWrapperFactory(City city) {
         this.city = city;
+        this.server = city.getMock();
     }
 
+    /**
+     * Builds an instance from the desired server.
+     * <p/>
+     * The type of the endpoint will be {@link EndpointType#PRODUCTION}) and the
+     * format will be {@link Format#XML}.
+     *
+     * @param server Desired endpoint.
+     */
+    public APIWrapperFactory(Server server) {
+        this.server = server;
+    }
     /**
      * Builds an instance from the desired city and endpoint type. The format
      * will be {@link Format#XML}.
      *
      * @param city         Desired city.
      * @param endpointType Desired endpoint type.
+     * @deprecated
      */
     public APIWrapperFactory(City city, EndpointType endpointType) {
         this(city);
+        this.endpointType = endpointType;
+    }
+
+    /**
+     * Builds an instance from the desired endpoint. The format
+     * will be {@link Format#XML}.
+     *
+     * @param server         Desired endpoint.
+     * @param endpointType Desired endpoint type.
+     */
+    public APIWrapperFactory(Server server, EndpointType endpointType) {
+        this(server);
         this.endpointType = endpointType;
     }
 
@@ -206,8 +235,8 @@ public class APIWrapperFactory {
      * @throws APIWrapperException If there was any problem.
      */
     public APIWrapper build() throws APIWrapperException, ClassNotFoundException {
-        if (city != null) {
-            return buildWrapperFromCity(city, endpointType, apiKey,
+        if (server != null) {
+            return buildWrapperFromServer(server, endpointType, apiKey,
                     networkManager);
         }
         if (endpointUrl != null) {
@@ -218,7 +247,7 @@ public class APIWrapperFactory {
     }
 
     /**
-     * Builds an {@link APIWrapper} ignoring the {@link APIWrapperFactory#city}
+     * Builds an {@link APIWrapper} ignoring the {@link APIWrapperFactory#server}
      * and {@link APIWrapperFactory#endpointType} parameters.
      *
      * @param endpointUrl    Endpoint's url.
@@ -255,6 +284,7 @@ public class APIWrapperFactory {
      * @param networkManager A {@link NetworkManager} implementation.
      * @return An instance suited to the given parameters.
      * @throws APIWrapperException If there was any problem.
+     * @deprecated
      */
     private APIWrapper buildWrapperFromCity(City city,
                                             EndpointType endpointType, String apiKey,
@@ -325,6 +355,90 @@ public class APIWrapperFactory {
         }
     }
 
+
+    /**
+     * Builds an {@link APIWrapper} ignoring the {@link #endpointUrl} and
+     * {@link #jurisdictionId} parameters. <b>NOTE</b>: This operation could
+     * require some time to be done (it involves network operations).
+     *
+     * @param server         Desired endpoint to work with.
+     * @param endpointType   Type of the desired endpoint (useful if you need, for example,
+     *                       a dev one to test your application).
+     * @param apiKey         Api key which allows to perform some operations. If you need
+     *                       one, go to the <a
+     *                       href="http://wiki.open311.org/GeoReport_v2/Servers">list of
+     *                       servers</a> and request it.
+     * @param networkManager A {@link NetworkManager} implementation.
+     * @return An instance suited to the given parameters.
+     * @throws APIWrapperException If there was any problem.
+     */
+    private APIWrapper buildWrapperFromServer(Server server,
+                                              EndpointType endpointType, String apiKey,
+                                              NetworkManager networkManager) throws APIWrapperException, ClassNotFoundException {
+        try {
+            logManager.logInfo(this, "Getting the service discovery.");
+            DataParser dataParser;
+            Endpoint endpoint = null;
+            ServiceDiscoveryInfo serviceDiscoveryInfo;
+            serviceDiscoveryInfo = cache
+                    .retrieveCachedServiceDiscoveryInfo(server);
+            if (serviceDiscoveryInfo == null) {
+                logManager
+                        .logInfo(this,
+                                "Service discovery is not cached, downloading it.");
+                String mDiscovery = server.getDiscoveryUrl();
+                if (mDiscovery != null && mDiscovery.length() > 0) {
+                    HttpUrl discoveryUrl = HttpUrl.parse(server.getDiscoveryUrl());
+
+                    guessFormat(discoveryUrl);
+
+                    dataParser = DataParserFactory.getInstance()
+                            .buildDataParser(format);
+                    serviceDiscoveryInfo = dataParser
+                            .parseServiceDiscovery(networkManager.doGet(discoveryUrl));
+                    cache.saveServiceDiscovery(server, serviceDiscoveryInfo);
+                    endpoint = serviceDiscoveryInfo
+                            .getMoreSuitableEndpoint(endpointType);
+                } else {
+                    List<Format> formats = Arrays.asList(Format.JSON);
+                    endpoint = new Endpoint(
+                            "http://wiki.open311.org/GeoReport_v2",
+                            server.getBaseURL(),
+                            null,
+                            endpointType.toString(),
+                            formats
+                    );
+                }
+            }
+
+            if (endpoint == null) {
+                logManager.logError(this, "No suitable endpoint was found.");
+                throw new APIWrapperException(
+                        "No suitable endpoint was found.",
+                        Error.NOT_SUITABLE_ENDPOINT_FOUND, null);
+            }
+            logManager.logInfo(this, "Selected " + endpoint.getUrl() + " as most suitable endpoint.");
+            Format format = selectFormat(this.format, endpoint);
+
+            return activateLoginIfRequested(createMostSuitableWrapper(
+                    endpoint.getUrl(), format, endpointType,
+                    networkManager, cache, server.getJurisdictionId(), apiKey));
+        } catch (MalformedURLException e) {
+            logManager.logError(this, "Problem building the url");
+            throw new APIWrapperException(e.getMessage(), Error.URL_BUILDER,
+                    null);
+        } catch (DataParsingException e) {
+            logManager.logError(this,
+                    "Problem parsing received data: " + e.getMessage());
+            throw new APIWrapperException(e.getMessage(), Error.DATA_PARSING,
+                    null);
+        } catch (IOException e) {
+            logManager.logError(this,
+                    "Problem with the network request: " + e.getMessage());
+            throw new APIWrapperException(e.getMessage(),
+                    Error.NETWORK_MANAGER, null);
+        }
+    }
     /**
      * Selects the given {@link Format} if it is allowed by the {@link Endpoint}
      *
@@ -375,7 +489,7 @@ public class APIWrapperFactory {
 
     public String toString() {
         StringBuilder builder = new StringBuilder("APIWrapperFactory");
-        if (city != null) {
+        if (server != null) {
             builder.append(" - building from a City object " + "type: ").append(endpointType);
         }
         if (endpointUrl != null) {
@@ -388,8 +502,8 @@ public class APIWrapperFactory {
                                                  Format format, EndpointType endpointType,
                                                  NetworkManager networkManager, Cache cache, String jurisdictionId,
                                                  String apiKey) {
-        if (city != null) {
-            if (city.getCityName().equals(City.BLOOMINGTON.getCityName()) && format.equals(Format.XML)) {
+        if (server != null) {
+            if (server.getName().equals(City.BLOOMINGTON.getCityName()) && format.equals(Format.XML)) {
                 logManager
                         .logInfo(
                                 this,
