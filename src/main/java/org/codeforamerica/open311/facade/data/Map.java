@@ -15,9 +15,16 @@ public class Map {
     private float lon;
     @SerializedName(DataParser.MAP_ZOOM_TAG)
     private int zoom;
+    @SerializedName("request_map")
+    private Boolean requestMap;
 
     public float getLat() {
         return lat;
+    }
+
+    public Boolean getRequestMapEnabled() {
+        if (requestMap == null) return true;
+        return requestMap;
     }
 
     public float getLon() {

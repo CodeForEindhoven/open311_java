@@ -336,7 +336,8 @@
     "map": {
       "lat": 51.433333,
       "lon": 5.466667,
-      "zoom": 10
+      "zoom": 10,
+      "request_map": false
     }
   },
   {
