@@ -112,6 +112,22 @@ public class APIWrapper {
     }
 
     /**
+     * Updates the format of the wrapper. A new {@link URLBuilder} will be
+     * instantiated.
+     *
+     * @param key   Header key.
+     * @param value Header value.
+     */
+    public void setHeader(String key, String value) throws APIWrapperException {
+        if (networkManager != null) {
+            networkManager.setHeader(key, value);
+        } else {
+            throw new APIWrapperException("NetworkManager not initialized", Error.NETWORK_MANAGER,
+                    null);
+        }
+    }
+
+    /**
      * Gets a list of services from the endpoint. <a
      * href="http://wiki.open311.org/GeoReport_v2#GET_Service_List">More
      * info</a>

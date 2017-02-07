@@ -49,6 +49,7 @@ public interface NetworkManager {
 	 */
 	void setFormat(Format format);
 
+	void setHeader(String key, String value);;
     /**
      * Gets the desired format of the requests.
      *

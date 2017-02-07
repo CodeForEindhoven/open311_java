@@ -19,11 +19,13 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.codeforamerica.open311.facade.Format;
+import org.codeforamerica.open311.facade.data.Header;
 
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
@@ -34,12 +36,13 @@ import javax.net.ssl.X509TrustManager;
  * okHttp</> library.
  *
  * @author Santiago Munín <santimunin@gmail.com>
+ * @author Milo van der Linden <milo@dogodigi.net>
  */
 public class HTTPNetworkManager implements NetworkManager {
     private OkHttpClient okhttpClient;
     private Format format;
     private Bitmap bitmap;
-    private String acceptLanguage;
+    private List<Header> headers = new ArrayList<Header>();
     private static final String FILENAME = "media.jpg";
 
     public X509TrustManager provideX509TrustManager() {
@@ -57,7 +60,7 @@ public class HTTPNetworkManager implements NetworkManager {
         return null;
     }
 
-    public OkHttpClient provideHttpClient(TLSSocketFactory sslSocketFactory, X509TrustManager trustManager) {
+    private OkHttpClient provideHttpClient(TLSSocketFactory sslSocketFactory, X509TrustManager trustManager) {
         return new OkHttpClient.Builder()
                 .sslSocketFactory(sslSocketFactory, trustManager)
                 .build();
@@ -78,24 +81,28 @@ public class HTTPNetworkManager implements NetworkManager {
     public HTTPNetworkManager() {
         this.okhttpClient = getHttpClient();
         Locale locale = Locale.getDefault();
-        this.acceptLanguage = locale.getLanguage() + "-" + locale.getCountry() + ", " + locale.getLanguage() + ";q=0.7, *;q=0.5";
-
+        Header mHeader = new Header("Accept-Language", locale.getLanguage() + "-" + locale.getCountry() + ", " + locale.getLanguage() + ";q=0.7, *;q=0.5");
+        this.headers.add(mHeader);
     }
 
     public HTTPNetworkManager(Bitmap bitmap) {
         this.bitmap = bitmap;
-        this.okhttpClient = getHttpClient();
-        Locale locale = Locale.getDefault();
-        this.acceptLanguage = locale.getLanguage() + "-" + locale.getCountry() + ", " + locale.getLanguage() + ";q=0.7, *;q=0.5";
+        new HTTPNetworkManager();
+    }
 
+    private Request.Builder setRequestBuilder() {
+        Request.Builder requestBuilder = new Request.Builder();
+        for (Header mH : this.headers) {
+            requestBuilder.addHeader(mH.getKey(), mH.getValue());
+        }
+        return requestBuilder;
     }
 
     @Override
     public String doGet(HttpUrl url) throws IOException {
-        Request request = new Request.Builder()
-                .addHeader("Accept-Language", acceptLanguage)
-                .url(url)
-                .build();
+        Request.Builder mRequestbuilder = setRequestBuilder();
+        mRequestbuilder.url(url);
+        Request request = mRequestbuilder.build();
         Response response = okhttpClient.newCall(request).execute();
         if (response.isSuccessful()) {
             setFormatFromResponse(response);
@@ -110,19 +117,18 @@ public class HTTPNetworkManager implements NetworkManager {
 
     @Override
     public String doPost(HttpUrl url, Map<String, String> parameters) throws IOException {
+        Request.Builder mRequestbuilder = setRequestBuilder();
+        mRequestbuilder.url(url);
         if (this.bitmap != null) {
             return doPost(url, parameters, bitmap);
         }
         FormBody.Builder formBuilder = new FormBody.Builder();
-        for (Entry<String, String> param : parameters.entrySet()) {
+        for (Map.Entry<String, String> param : parameters.entrySet()) {
             formBuilder.add(param.getKey(), param.getValue());
         }
         RequestBody body = formBuilder.build();
-        Request request = new Request.Builder()
-                .addHeader("Accept-Language", acceptLanguage)
-                .url(url)
-                .post(body)
-                .build();
+        mRequestbuilder.post(body);
+        Request request = mRequestbuilder.build();
         Response response;
 
         response = okhttpClient.newCall(request).execute();
@@ -137,13 +143,15 @@ public class HTTPNetworkManager implements NetworkManager {
 
     }
 
-    public String doPost(HttpUrl url, Map<String, String> parameters, Bitmap bitmap) throws IOException {
+    private String doPost(HttpUrl url, Map<String, String> parameters, Bitmap bitmap) throws IOException {
+        Request.Builder mRequestbuilder = setRequestBuilder();
+        mRequestbuilder.url(url);
         // Construct the multipart
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
 
         // Add the parameters
-        for (Entry<String, String> entry : parameters.entrySet()) {
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
             builder.addFormDataPart(entry.getKey(), entry.getValue());
         }
 
@@ -158,13 +166,8 @@ public class HTTPNetworkManager implements NetworkManager {
         //Create the RequestBody
         RequestBody requestBody = builder.build();
 
-
         // Create the Request
-        Request request = new Request.Builder()
-                .addHeader("Accept-Language", acceptLanguage)
-                .url(url)
-                .post(requestBody)
-                .build();
+        Request request = mRequestbuilder.build();
         Response response = okhttpClient.newCall(request).execute();
         if (response.isSuccessful()) {
             return response.body().string();
@@ -173,6 +176,13 @@ public class HTTPNetworkManager implements NetworkManager {
                     "Invalid response - " + response.message()
             );
         }
+
+    }
+
+    @Override
+    public void setHeader(String key, String value) {
+        Header mHeader = new Header(key, value);
+        this.headers.add(mHeader);
 
     }
 

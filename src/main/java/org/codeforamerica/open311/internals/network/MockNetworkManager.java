@@ -9,11 +9,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codeforamerica.open311.facade.EndpointType;
 import org.codeforamerica.open311.facade.Format;
 import org.codeforamerica.open311.facade.data.AttributeInfo;
 import org.codeforamerica.open311.facade.data.Endpoint;
@@ -178,6 +176,11 @@ public class MockNetworkManager implements NetworkManager {
         if (format != null) {
             this.format = format;
         }
+    }
+
+    @Override
+    public void setHeader(String key, String value) {
+
     }
 
     public Format getFormat() {
@@ -385,7 +388,7 @@ public class MockNetworkManager implements NetworkManager {
      *
      * @return XML.
      */
-    public String postServiceRequestResponseXML() {
+    private String postServiceRequestResponseXML() {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?><service_requests><request>"
                 + "<service_request_id>293944</service_request_id><service_notice>"
                 + "The City will inspect and require the responsible party to correct "
@@ -399,7 +402,7 @@ public class MockNetworkManager implements NetworkManager {
      *
      * @return JSON.
      */
-    public String postServiceRequestResponseJSON() {
+    private String postServiceRequestResponseJSON() {
         Gson gson = new Gson();
         POSTServiceRequestResponse[] postServiceRequestResponses = new POSTServiceRequestResponse[1];
         postServiceRequestResponses[0] = new POSTServiceRequestResponse(
@@ -416,7 +419,7 @@ public class MockNetworkManager implements NetworkManager {
      *
      * @return XML.
      */
-    public String errorXML() {
+    private String errorXML() {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?><errors><error><code>403</code><description>Invalid api_key received -- can't proceed with create_request.</description></error>"
                 + "</errors>";
     }
@@ -426,7 +429,7 @@ public class MockNetworkManager implements NetworkManager {
      *
      * @return JSON.
      */
-    public String errorJSON() {
+    private String errorJSON() {
         Gson gson = new Gson();
         GeoReportV2Error[] geoReportV2Errors = new GeoReportV2Error[1];
         geoReportV2Errors[0] = new GeoReportV2Error(
@@ -441,7 +444,7 @@ public class MockNetworkManager implements NetworkManager {
      *
      * @return XML.
      */
-    public String discoveryXML() {
+    private String discoveryXML() {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?><discovery>"
                 + "<changeset>2011-04-05T17:48:34Z</changeset><contact>Please email "
                 + "( content.311@sfgov.org )  or call ( 415-701-2311 ) for assistance "
@@ -472,7 +475,7 @@ public class MockNetworkManager implements NetworkManager {
      *
      * @return JSON.
      */
-    public String discoveryJSON() {
+    private String discoveryJSON() {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
         DateParser dateParser = new DateParser();
         List<Endpoint> endpoints = new ArrayList<Endpoint>();
