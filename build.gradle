@@ -7,7 +7,7 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
-    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.google.code.gson:gson:2.7'
     compile group: 'joda-time', name: 'joda-time', version: '2.9.1'
     compile group: 'net.iharder', name: 'base64', version: '2.3.8'
     compile group: 'com.google.android', name: 'android', version: '2.1.2'
