@@ -14,6 +14,7 @@ import org.codeforamerica.open311.facade.EndpointType;
 import org.codeforamerica.open311.facade.Format;
 import org.codeforamerica.open311.facade.Servers;
 import org.codeforamerica.open311.facade.data.City;
+import org.codeforamerica.open311.facade.data.Server;
 import org.codeforamerica.open311.facade.data.Service;
 import org.codeforamerica.open311.facade.data.ServiceDefinition;
 import org.codeforamerica.open311.facade.data.ServiceRequest;
@@ -48,13 +49,14 @@ public class CacheTest {
 
     @Test
     public void testServiceDiscoveryCaching() throws APIWrapperException, ClassNotFoundException {
-        assertNull(cache.retrieveCachedServiceDiscoveryInfo(City.SAN_FRANCISCO));
+        Server testCity = City.SAN_FRANCISCO.getMock();
+        assertNull(cache.retrieveCachedServiceDiscoveryInfo(testCity));
         APIWrapperFactory wrapperFactory = new APIWrapperFactory(
-                City.SAN_FRANCISCO, EndpointType.TEST).setCache(cache).setNetworkManager(
+                testCity, EndpointType.TEST).setCache(cache).setNetworkManager(
                 new MockNetworkManager(Format.XML));
         wrapperFactory.build();
         assertNotNull(cache
-                .retrieveCachedServiceDiscoveryInfo(City.SAN_FRANCISCO));
+                .retrieveCachedServiceDiscoveryInfo(testCity));
     }
 
     @Test
@@ -84,11 +86,6 @@ public class CacheTest {
         ServiceDefinition cachedServiceDefinition = cache
                 .retrieveCachedServiceDefinition(wrapper.getEndpointUrl(),
                         "001");
-        //assertNotNull(cachedServiceDefinition);
-        //assertEquals(serviceDefinition.getServiceCode(),
-        //        cachedServiceDefinition.getServiceCode());
-        //assertEquals(serviceDefinition.getAttributes().size(),
-        //       cachedServiceDefinition.getAttributes().size());
     }
 
     @Test
