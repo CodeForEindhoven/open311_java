@@ -1,18 +1,14 @@
 package org.codeforamerica.open311.internals.network;
 
-import android.graphics.Bitmap;
 import android.util.Log;
 
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.UnknownServiceException;
 import java.security.KeyManagementException;
@@ -41,11 +37,9 @@ import javax.net.ssl.X509TrustManager;
 public class HTTPNetworkManager implements NetworkManager {
     private OkHttpClient okhttpClient;
     private Format format;
-    private Bitmap bitmap;
     private List<Header> headers = new ArrayList<Header>();
-    private static final String FILENAME = "media.jpg";
 
-    public X509TrustManager provideX509TrustManager() {
+    private X509TrustManager provideX509TrustManager() {
         try {
             TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             factory.init((KeyStore) null);
@@ -85,11 +79,6 @@ public class HTTPNetworkManager implements NetworkManager {
         this.headers.add(mHeader);
     }
 
-    public HTTPNetworkManager(Bitmap bitmap) {
-        this.bitmap = bitmap;
-        new HTTPNetworkManager();
-    }
-
     private Request.Builder setRequestBuilder() {
         Request.Builder requestBuilder = new Request.Builder();
         for (Header mH : this.headers) {
@@ -119,9 +108,6 @@ public class HTTPNetworkManager implements NetworkManager {
     public String doPost(HttpUrl url, Map<String, String> parameters) throws IOException {
         Request.Builder mRequestbuilder = setRequestBuilder();
         mRequestbuilder.url(url);
-        if (this.bitmap != null) {
-            return doPost(url, parameters, bitmap);
-        }
         FormBody.Builder formBuilder = new FormBody.Builder();
         for (Map.Entry<String, String> param : parameters.entrySet()) {
             formBuilder.add(param.getKey(), param.getValue());
@@ -134,42 +120,6 @@ public class HTTPNetworkManager implements NetworkManager {
         response = okhttpClient.newCall(request).execute();
         if (response.isSuccessful()) {
             setFormatFromResponse(response);
-            return response.body().string();
-        } else {
-            throw new IOException(
-                    "Invalid response - " + response.message()
-            );
-        }
-
-    }
-
-    private String doPost(HttpUrl url, Map<String, String> parameters, Bitmap bitmap) throws IOException {
-        Request.Builder mRequestbuilder = setRequestBuilder();
-        mRequestbuilder.url(url);
-        // Construct the multipart
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);
-
-        // Add the parameters
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            builder.addFormDataPart(entry.getKey(), entry.getValue());
-        }
-
-        // Construct the image
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream);
-        byte[] binaryData = stream.toByteArray();
-
-        //entity.addBinaryBody("media", binaryData, contentType, FILENAME);
-        builder.addFormDataPart("media", FILENAME, RequestBody.create(MediaType.parse("image/jpeg"), binaryData));
-
-        //Create the RequestBody
-        RequestBody requestBody = builder.build();
-
-        // Create the Request
-        Request request = mRequestbuilder.build();
-        Response response = okhttpClient.newCall(request).execute();
-        if (response.isSuccessful()) {
             return response.body().string();
         } else {
             throw new IOException(
