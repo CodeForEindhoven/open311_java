@@ -295,7 +295,7 @@ public class APIWrapperFactory {
             Endpoint endpoint = null;
             ServiceDiscoveryInfo serviceDiscoveryInfo;
             serviceDiscoveryInfo = cache
-                    .retrieveCachedServiceDiscoveryInfo(city);
+                    .retrieveCachedServiceDiscoveryInfo(city.getMock());
             if (serviceDiscoveryInfo == null) {
                 logManager
                         .logInfo(this,
@@ -310,7 +310,7 @@ public class APIWrapperFactory {
                             .buildDataParser(format);
                     serviceDiscoveryInfo = dataParser
                             .parseServiceDiscovery(networkManager.doGet(discoveryUrl));
-                    cache.saveServiceDiscovery(city, serviceDiscoveryInfo);
+                    cache.saveServiceDiscovery(city.getMock(), serviceDiscoveryInfo);
                     endpoint = serviceDiscoveryInfo
                             .getMoreSuitableEndpoint(endpointType);
                 } else {

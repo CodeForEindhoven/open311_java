@@ -37,28 +37,8 @@ public class NoCache implements Cache {
 									 ServiceDiscoveryInfo serviceDiscovery) {
 	}
 
-	/**
-	 *
-	 * @param city City of interest.
-	 * @deprecated
-	 */
-	@Override
-	public void saveServiceDiscovery(City city,
-			ServiceDiscoveryInfo serviceDiscovery) {
-	}
-
 	@Override
 	public ServiceDiscoveryInfo retrieveCachedServiceDiscoveryInfo(Server server) {
-		return null;
-	}
-
-	/**
-	 *
-	 * @param city City of interest.
-	 * @deprecated
-     */
-	@Override
-	public ServiceDiscoveryInfo retrieveCachedServiceDiscoveryInfo(City city) {
 		return null;
 	}
 

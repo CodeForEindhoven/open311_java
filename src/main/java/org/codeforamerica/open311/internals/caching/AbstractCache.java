@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codeforamerica.open311.facade.data.City;
 import org.codeforamerica.open311.facade.data.Server;
 import org.codeforamerica.open311.facade.data.Service;
 import org.codeforamerica.open311.facade.data.ServiceDefinition;
@@ -84,38 +83,6 @@ public abstract class AbstractCache implements Cache {
         }
         return null;
     }
-	/**
-	 *
-	 * @param city City of interest.
-	 * @deprecated
-	 */
-	@Override
-	public void saveServiceDiscovery(City city,
-			ServiceDiscoveryInfo serviceDiscovery) {
-		if (city != null && serviceDiscovery != null) {
-			CacheableObject cacheableObject = new CacheableObject(
-					serviceDiscovery,
-					timeToLive.get(CacheableOperation.GET_SERVICE_DISCOVERY));
-			saveProperty(CacheableOperation.GET_SERVICE_DISCOVERY.toString()
-					+ city.toString(), cacheableObject.serialize());
-		}
-	}
-
-	/**
-	 *
-	 * @param city City of interest.
-	 * @deprecated
-     */
-	@Override
-	public ServiceDiscoveryInfo retrieveCachedServiceDiscoveryInfo(City city) {
-		if (city != null) {
-			String rawData = getProperty(CacheableOperation.GET_SERVICE_DISCOVERY
-					+ city.toString());
-			CacheableObject deserializedObject = new CacheableObject(rawData);
-			return (ServiceDiscoveryInfo) deserializedObject.getObject();
-		}
-		return null;
-	}
 
 	@Override
 	public void saveListOfServices(String endpointUrl, List<Service> services) {

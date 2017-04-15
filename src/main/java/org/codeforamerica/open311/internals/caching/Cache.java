@@ -41,16 +41,6 @@ public interface Cache {
                               ServiceDiscoveryInfo serviceDiscovery);
 
     /**
-     * Saves a {@link ServiceDiscoveryInfo object} related to a city.
-     *
-     * @param city             City related to the requested service discovery.
-     * @param serviceDiscovery The obtained service discovery.
-     * @deprecated
-     */
-    void saveServiceDiscovery(City city,
-                              ServiceDiscoveryInfo serviceDiscovery);
-
-    /**
      * Looks for the service discovery of a given city in the local cache.
      *
      * @param server City of interest.
@@ -58,15 +48,6 @@ public interface Cache {
      * it isn't cached.
      */
     ServiceDiscoveryInfo retrieveCachedServiceDiscoveryInfo(Server server);
-    /**
-     * Looks for the service discovery of a given city in the local cache.
-     *
-     * @param city City of interest.
-     * @return The service discovery of the given city of <code>null</code> if
-     * it isn't cached.
-     * @deprecated
-     */
-    ServiceDiscoveryInfo retrieveCachedServiceDiscoveryInfo(City city);
 
     /**
      * Saves a list of {@link Service} objects related to an endpoint.
