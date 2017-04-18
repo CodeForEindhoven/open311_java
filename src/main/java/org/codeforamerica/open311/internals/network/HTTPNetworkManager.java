@@ -1,24 +1,25 @@
 package org.codeforamerica.open311.internals.network;
 
-import android.graphics.Bitmap;
 import android.util.Log;
 
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.UnknownServiceException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -39,24 +40,32 @@ import javax.net.ssl.X509TrustManager;
  * @author Milo van der Linden <milo@dogodigi.net>
  */
 public class HTTPNetworkManager implements NetworkManager {
-    private OkHttpClient okhttpClient;
     private Format format;
-    private Bitmap bitmap;
     private List<Header> headers = new ArrayList<Header>();
-    private static final String FILENAME = "media.jpg";
 
-    public X509TrustManager provideX509TrustManager() {
+    private X509TrustManager provideX509TrustManager() throws CertificateException, IOException {
+        // Add the certificate for open311_io so older versions of Android (<4.3) will not fail.
+        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        InputStream open311_io = HTTPNetworkManager.class.getResourceAsStream("/www_open311_io.crt");
         try {
+
+            // Create a KeyStore containing our trusted CAs
+            String keyStoreType = KeyStore.getDefaultType();
+            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("open311_io", cf.generateCertificate(open311_io));
+            // Create a TrustManager that trusts the CAs in our KeyStore
             TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            factory.init((KeyStore) null);
+            factory.init(keyStore);
             TrustManager[] trustManagers = factory.getTrustManagers();
             return (X509TrustManager) trustManagers[0];
         } catch (NoSuchAlgorithmException exception) {
             Log.e(getClass().getSimpleName(), "no trust manager available", exception);
         } catch (KeyStoreException exception) {
             Log.e(getClass().getSimpleName(), "no trust manager available", exception);
+        } finally {
+            open311_io.close();
         }
-
         return null;
     }
 
@@ -68,26 +77,25 @@ public class HTTPNetworkManager implements NetworkManager {
 
     private OkHttpClient getHttpClient() {
         try {
-            TLSSocketFactory tlsSocketFactory = new TLSSocketFactory(provideX509TrustManager());
-            return provideHttpClient(tlsSocketFactory, provideX509TrustManager());
+            X509TrustManager tm = provideX509TrustManager();
+            TLSSocketFactory tlsSocketFactory = new TLSSocketFactory(tm);
+            return provideHttpClient(tlsSocketFactory, tm);
         } catch (KeyManagementException e) {
             Log.e(getClass().getSimpleName(), "no tls ssl socket factory available", e);
         } catch (NoSuchAlgorithmException e) {
             Log.e(getClass().getSimpleName(), "no tls ssl socket factory available", e);
+        } catch (CertificateException e) {
+            Log.e(getClass().getSimpleName(), "CertificateException", e);
+        } catch (IOException e) {
+            Log.e(getClass().getSimpleName(), "IOException", e);
         }
         return null;
     }
 
     public HTTPNetworkManager() {
-        this.okhttpClient = getHttpClient();
         Locale locale = Locale.getDefault();
         Header mHeader = new Header("Accept-Language", locale.getLanguage() + "-" + locale.getCountry() + ", " + locale.getLanguage() + ";q=0.7, *;q=0.5");
         this.headers.add(mHeader);
-    }
-
-    public HTTPNetworkManager(Bitmap bitmap) {
-        this.bitmap = bitmap;
-        new HTTPNetworkManager();
     }
 
     private Request.Builder setRequestBuilder() {
@@ -100,16 +108,23 @@ public class HTTPNetworkManager implements NetworkManager {
 
     @Override
     public String doGet(HttpUrl url) throws IOException {
+        OkHttpClient client = getHttpClient();
         Request.Builder mRequestbuilder = setRequestBuilder();
         mRequestbuilder.url(url);
         Request request = mRequestbuilder.build();
-        Response response = okhttpClient.newCall(request).execute();
-        if (response.isSuccessful()) {
-            setFormatFromResponse(response);
-            return response.body().string();
+        if (client != null) {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                setFormatFromResponse(response);
+                return response.body().string();
+            } else {
+                throw new IOException(
+                        "Invalid response - " + response.message()
+                );
+            }
         } else {
             throw new IOException(
-                    "Invalid response - " + response.message()
+                    "OkHttpClient not set"
             );
         }
     }
@@ -117,11 +132,9 @@ public class HTTPNetworkManager implements NetworkManager {
 
     @Override
     public String doPost(HttpUrl url, Map<String, String> parameters) throws IOException {
+        OkHttpClient client = getHttpClient();
         Request.Builder mRequestbuilder = setRequestBuilder();
         mRequestbuilder.url(url);
-        if (this.bitmap != null) {
-            return doPost(url, parameters, bitmap);
-        }
         FormBody.Builder formBuilder = new FormBody.Builder();
         for (Map.Entry<String, String> param : parameters.entrySet()) {
             formBuilder.add(param.getKey(), param.getValue());
@@ -130,50 +143,19 @@ public class HTTPNetworkManager implements NetworkManager {
         mRequestbuilder.post(body);
         Request request = mRequestbuilder.build();
         Response response;
-
-        response = okhttpClient.newCall(request).execute();
-        if (response.isSuccessful()) {
-            setFormatFromResponse(response);
-            return response.body().string();
+        if (client != null) {
+            response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                setFormatFromResponse(response);
+                return response.body().string();
+            } else {
+                throw new IOException(
+                        "Invalid response - " + response.message()
+                );
+            }
         } else {
             throw new IOException(
-                    "Invalid response - " + response.message()
-            );
-        }
-
-    }
-
-    private String doPost(HttpUrl url, Map<String, String> parameters, Bitmap bitmap) throws IOException {
-        Request.Builder mRequestbuilder = setRequestBuilder();
-        mRequestbuilder.url(url);
-        // Construct the multipart
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);
-
-        // Add the parameters
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            builder.addFormDataPart(entry.getKey(), entry.getValue());
-        }
-
-        // Construct the image
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream);
-        byte[] binaryData = stream.toByteArray();
-
-        //entity.addBinaryBody("media", binaryData, contentType, FILENAME);
-        builder.addFormDataPart("media", FILENAME, RequestBody.create(MediaType.parse("image/jpeg"), binaryData));
-
-        //Create the RequestBody
-        RequestBody requestBody = builder.build();
-
-        // Create the Request
-        Request request = mRequestbuilder.build();
-        Response response = okhttpClient.newCall(request).execute();
-        if (response.isSuccessful()) {
-            return response.body().string();
-        } else {
-            throw new IOException(
-                    "Invalid response - " + response.message()
+                    "OkHttpClient not set"
             );
         }
 
