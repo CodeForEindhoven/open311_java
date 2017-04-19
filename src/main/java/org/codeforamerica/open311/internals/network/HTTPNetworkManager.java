@@ -16,10 +16,8 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -29,7 +27,6 @@ import org.codeforamerica.open311.facade.Format;
 import org.codeforamerica.open311.facade.data.Header;
 
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 /**
@@ -47,17 +44,15 @@ public class HTTPNetworkManager implements NetworkManager {
         // Add the certificate for open311_io so older versions of Android (<4.3) will not fail.
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         InputStream open311_io = HTTPNetworkManager.class.getResourceAsStream("/www_open311_io.crt");
+        InputStream peoriagov_org = HTTPNetworkManager.class.getResourceAsStream("/ureport_peoriagov_org.crt");
         try {
-
             // Create a KeyStore containing our trusted CAs
             String keyStoreType = KeyStore.getDefaultType();
             KeyStore keyStore = KeyStore.getInstance(keyStoreType);
             keyStore.load(null, null);
             keyStore.setCertificateEntry("open311_io", cf.generateCertificate(open311_io));
-            // Create a TrustManager that trusts the CAs in our KeyStore
-            TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            factory.init(keyStore);
-            TrustManager[] trustManagers = factory.getTrustManagers();
+            keyStore.setCertificateEntry("peoriagov_org", cf.generateCertificate(peoriagov_org));
+            TrustManager[] trustManagers = CompositeX509TrustManager.getTrustManagers(keyStore);
             return (X509TrustManager) trustManagers[0];
         } catch (NoSuchAlgorithmException exception) {
             Log.e(getClass().getSimpleName(), "no trust manager available", exception);

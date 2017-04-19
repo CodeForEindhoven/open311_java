@@ -30,7 +30,8 @@ public class APIWrapperFactoryTest {
 
     @Test
     public void getMockNetworkDiscovery() throws APIWrapperException, ClassNotFoundException {
-        APIWrapper wrapper = new APIWrapperFactory(City.SAN_FRANCISCO,
+        Servers servers = new Servers();
+        APIWrapper wrapper = new APIWrapperFactory(servers.getServer("San Francisco, CA"),
                 EndpointType.TEST).setNetworkManager(new MockNetworkManager(Format.XML))
                 .build();
         assertEquals(wrapper.getWrapperInfo(),
@@ -39,13 +40,11 @@ public class APIWrapperFactoryTest {
 
     @Test
     public void getHTTPNetworkDiscovery() throws APIWrapperException, ClassNotFoundException {
-
         for (City d : City.values()) {
             try {
                 APIWrapper wrapper = new APIWrapperFactory(d,
                         EndpointType.PRODUCTION).setNetworkManager(new HTTPNetworkManager())
                         .setCache(new NoCache())
-                        //.withLogs()
                         .build();
                 System.out.println("Processing City: " + d);
                 assertNotNull(wrapper.getEndpointUrl());
